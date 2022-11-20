@@ -15,6 +15,4 @@ public class CreateUserRequestDto : RequestDto
     
     [MaxLength(UserConstraints.EmailMaxLength, ErrorMessage = UserConstraintErrorMessages.EmailMaxLength)]
     public string? Email { get; set; }
-
-    public UserRoles UserRole { get; set; }
 }

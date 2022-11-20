@@ -35,7 +35,6 @@ export const UserEdit = () => {
                 <TextInput disabled label="Id" source="id" />
                 <TextInput source="username" fullWidth />
                 <TextInput source="email" type="email" fullWidth />
-                <TextInput source="password" type="password" />
             </SimpleForm>
         </Edit>
     );

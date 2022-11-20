@@ -1,34 +1,37 @@
 ﻿using AutoMapper;
 using Common.Constants;
 using DataAccess;
-using DataAccess.Constants;
 using DataAccess.Entities;
 using DataTransferObjects.Rest.User;
-using EntityFramework.Exceptions.Common;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using Services.Exceptions;
 using Services.FilterServices.Interfaces;
+using Services.RestServices.Interfaces;
 
 namespace Services.RestServices;
 
-// [GenerateRestController("users")]
-public class UserService : RestService<CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto, UserEntity>
+public class UserService : BaseRestService<UserResponseDto, UserEntity>, 
+    IRestService<CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto>
 {
     public UserService(AppDbContext dbContext, IMapper mapper, IEntityFilterService<UserEntity> filterService) 
         : base(dbContext, mapper, filterService)
     {
     }
 
-    public override Task<UserResponseDto> Add(CreateUserRequestDto requestDto)
+    public async Task<UserResponseDto> Add(CreateUserRequestDto requestDto)
     {
-        requestDto.UserRole = UserRoles.Player;
-        return base.Add(requestDto);
+        return await RestServiceHelper.Execute(async () =>
+        {
+            var entity = Mapper.Map<UserEntity>(requestDto);
+            entity.UserRole = UserRoles.Player;
+            await RestServiceHelper.AddEntity(DbContext, DbSet, entity);
+            return Mapper.Map<UserResponseDto>(entity);
+        });
     }
 
-    public override async Task<UserResponseDto> Update(long id, UpdateUserRequestDto requestDto)
+    public async Task<UserResponseDto> Update(long id, UpdateUserRequestDto requestDto)
     {
-        try
+        return await RestServiceHelper.Execute(async () =>
         {
             var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
             if (entity == null)
@@ -38,30 +41,23 @@ public class UserService : RestService<CreateUserRequestDto, UpdateUserRequestDt
 
             entity.Email = requestDto.Email;
             entity.Username = requestDto.Username;
-            entity.IsDeleted = false;
-            entity.Updated = DateTime.UtcNow;
-
-            DbSet.Update(entity);
-            await DbContext.SaveChangesAsync();
-            
+            await RestServiceHelper.UpdateEntity(DbContext, DbSet, entity);
             return Mapper.Map<UserResponseDto>(entity);
-        }
-        catch (UniqueConstraintException e)
+        });
+    }
+
+    public async Task<UserResponseDto> Delete(long id)
+    {
+        return await RestServiceHelper.Execute(async () =>
         {
-            if (e.InnerException is PostgresException postgresException)
+            var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
+            if (entity == null)
             {
-                var errorMessage = EntitiesConstraintNames.MapConstraintNameToError(postgresException.ConstraintName);
-                throw new BadRequestException(errorMessage);
+                throw new NotFoundException();
             }
-            
-            throw new BadRequestException();
-        }
-        catch (DbUpdateException e) when (e is CannotInsertNullException
-                                              or MaxLengthExceededException
-                                              or NumericOverflowException
-                                              or ReferenceConstraintException)
-        {
-            throw new BadRequestException();
-        }
+
+            await RestServiceHelper.DeleteEntity(DbContext, DbSet, entity);
+            return Mapper.Map<UserResponseDto>(entity);
+        });
     }
 }
