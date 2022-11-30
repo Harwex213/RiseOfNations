@@ -1,0 +1,8 @@
+{
+  "gameVariables": {
+    "tileIncome": "tileIncome",
+    "farmIncome": "farmIncome",
+    "initialFarmCost": "initialFarmCost",
+    "farmCostIncrease": "farmCostIncrease"
+  }
+}

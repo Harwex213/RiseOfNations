@@ -1,5 +1,7 @@
 import React, { useCallback } from "react";
 import { Edit, SimpleForm, TextInput, useRedirect, useNotify, useUpdate } from "react-admin";
+import { resources, routes } from "../../common/constants";
+import { apiService } from "../../service";
 
 export const UserEdit = () => {
     const redirect = useRedirect();
@@ -7,24 +9,15 @@ export const UserEdit = () => {
     const [update] = useUpdate();
     const save = useCallback(
         async (values) => {
-            try {
-                const id = values.id;
-                delete values.id;
-                await update("users", { id: id, data: values }, { returnPromise: true });
-                notify("ra.notification.updated", {
-                    type: "info",
-                    messageArgs: { smart_count: 1 },
-                });
-                redirect("list");
-            } catch (error) {
-                console.log(error.body);
-                if (error.body.errors) {
-                    return error.body.errors;
-                }
-                return {
-                    username: error.body.message,
-                };
-            }
+            return await apiService.updateEntity({
+                update,
+                notify,
+                redirect,
+                values,
+                resource: resources.users,
+                redirectOnSuccessTo: routes.toUsers,
+                defaultKeyForError: "username",
+            });
         },
         [update, notify, redirect]
     );
@@ -32,7 +25,7 @@ export const UserEdit = () => {
     return (
         <Edit>
             <SimpleForm onSubmit={save}>
-                <TextInput disabled label="Id" source="id" />
+                <TextInput disabled label="Id" source="id" fullWidth />
                 <TextInput source="username" fullWidth />
                 <TextInput source="email" type="email" fullWidth />
             </SimpleForm>

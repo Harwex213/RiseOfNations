@@ -6,6 +6,7 @@ using DataTransferObjects.Rest.User;
 using Microsoft.EntityFrameworkCore;
 using Services.Exceptions;
 using Services.FilterServices.Interfaces;
+using Services.RestServices.Base;
 using Services.RestServices.Interfaces;
 
 namespace Services.RestServices;
@@ -23,7 +24,9 @@ public class UserService : BaseRestService<UserResponseDto, UserEntity>,
         return await RestServiceHelper.Execute(async () =>
         {
             var entity = Mapper.Map<UserEntity>(requestDto);
+            
             entity.UserRole = UserRoles.Player;
+            
             await RestServiceHelper.AddEntity(DbContext, DbSet, entity);
             return Mapper.Map<UserResponseDto>(entity);
         });
@@ -41,22 +44,8 @@ public class UserService : BaseRestService<UserResponseDto, UserEntity>,
 
             entity.Email = requestDto.Email;
             entity.Username = requestDto.Username;
+            
             await RestServiceHelper.UpdateEntity(DbContext, DbSet, entity);
-            return Mapper.Map<UserResponseDto>(entity);
-        });
-    }
-
-    public async Task<UserResponseDto> Delete(long id)
-    {
-        return await RestServiceHelper.Execute(async () =>
-        {
-            var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
-            if (entity == null)
-            {
-                throw new NotFoundException();
-            }
-
-            await RestServiceHelper.DeleteEntity(DbContext, DbSet, entity);
             return Mapper.Map<UserResponseDto>(entity);
         });
     }

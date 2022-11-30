@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
 using Common.Interfaces;
 using DataAccess;
+using DataAccess.Entities.Interfaces;
 using DataAccess.Utils;
 using DataTransferObjects.Rest;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Services.Exceptions;
 using Services.FilterServices.Interfaces;
 
-namespace Services.RestServices;
+namespace Services.RestServices.Base;
 
 public abstract class BaseRestService<TResponseDto, TEntity>
     where TResponseDto : ResponseDto
@@ -30,8 +32,7 @@ public abstract class BaseRestService<TResponseDto, TEntity>
 
     protected class DefaultEntityFilterDto
     {
-        public long? Id { get; set; }
-        public long[]? Ids { get; set; }
+        public object? Id { get; set; }
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
         public bool? IsDeleted { get; set; }
@@ -41,13 +42,17 @@ public abstract class BaseRestService<TResponseDto, TEntity>
     {
         static IQueryable<TEntity> FilterDefaultEntityProps(IQueryable<TEntity> entities, DefaultEntityFilterDto defaultEntityFilterDto)
         {
-            if (defaultEntityFilterDto.Id != null)
+            if (defaultEntityFilterDto.Id is long id)
             {
-                entities = entities.Where(e => e.Id == defaultEntityFilterDto.Id);
+                entities = entities.Where(e => e.Id == id);
             }
-            if (defaultEntityFilterDto.Ids != null)
+            if (defaultEntityFilterDto.Id is JArray array)
             {
-                entities = entities.Where(e => defaultEntityFilterDto.Ids.Contains(e.Id));
+                var ids = array.ToObject<long[]>();
+                if (ids != null)
+                {
+                    entities = entities.Where(e => ids.Contains(e.Id));
+                }
             }
             if (defaultEntityFilterDto.Created != null)
             {
@@ -108,5 +113,20 @@ public abstract class BaseRestService<TResponseDto, TEntity>
     public virtual async Task<TResponseDto> Get(long id)
     {
         return Mapper.Map<TResponseDto>(await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id));
+    }
+    
+    public virtual async Task<TResponseDto> Delete(long id)
+    {
+        return await RestServiceHelper.Execute(async () =>
+        {
+            var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
+            if (entity == null)
+            {
+                throw new NotFoundException();
+            }
+
+            await RestServiceHelper.DeleteEntity(DbContext, DbSet, entity);
+            return Mapper.Map<TResponseDto>(entity);
+        });
     }
 }

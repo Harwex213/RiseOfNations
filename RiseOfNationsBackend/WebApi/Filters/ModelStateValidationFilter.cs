@@ -15,7 +15,7 @@ public class ModelStateValidationAttribute : Attribute, IActionFilter
 
         var errors = context.ModelState.Where(v => v.Value?.Errors.Count > 0)
             .ToDictionary(
-                v => v.Key.ToLower(),
+                v => v.Key,
                 v => v.Value?.Errors.FirstOrDefault()?.ErrorMessage
                 );
         context.Result = new BadRequestObjectResult(new RequestMultipleErrorDto

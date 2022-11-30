@@ -1,12 +1,12 @@
-﻿using Common.Interfaces;
-using DataAccess;
+﻿using DataAccess;
 using DataAccess.Constants;
+using DataAccess.Entities.Interfaces;
 using EntityFramework.Exceptions.Common;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Services.Exceptions;
 
-namespace Services.RestServices;
+namespace Services.RestServices.Base;
 
 public static class RestServiceHelper
 {
@@ -67,9 +67,9 @@ public static class RestServiceHelper
     public static async Task DeleteEntity<TEntity>(AppDbContext dbContext, DbSet<TEntity> dbSet, TEntity entity)
         where TEntity : Entity
     {
-        entity.IsDeleted = true;
-        entity.Updated = DateTime.UtcNow;
-        
+        entity.Delete();
+        entity.CascadeDelete();
+
         dbSet.Update(entity);
         await dbContext.SaveChangesAsync();
     }

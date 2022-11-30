@@ -1,4 +1,6 @@
 ﻿using Common.Interfaces;
+using DataAccess.Entities;
+using DataAccess.Entities.Interfaces;
 using Newtonsoft.Json.Linq;
 
 namespace Services.FilterServices.Interfaces;

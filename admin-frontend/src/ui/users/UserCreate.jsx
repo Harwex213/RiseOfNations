@@ -1,5 +1,7 @@
 import React, { useCallback } from "react";
 import { Create, SimpleForm, TextInput, useCreate, useNotify, useRedirect } from "react-admin";
+import { resources, routes } from "../../common/constants";
+import { apiService } from "../../service";
 
 export const UserCreate = () => {
     const redirect = useRedirect();
@@ -7,21 +9,15 @@ export const UserCreate = () => {
     const [create] = useCreate();
     const save = useCallback(
         async (values) => {
-            try {
-                await create("users", { data: values }, { returnPromise: true });
-                notify("ra.notification.created", {
-                    type: "info",
-                    messageArgs: { smart_count: 1 },
-                });
-                redirect("list");
-            } catch (error) {
-                if (error.body.errors) {
-                    return error.body.errors;
-                }
-                return {
-                    username: error.body.message,
-                };
-            }
+            return await apiService.createEntity({
+                create,
+                notify,
+                redirect,
+                values,
+                resource: resources.users,
+                redirectOnSuccessTo: routes.toUsers,
+                defaultKeyForError: "username",
+            });
         },
         [create, notify, redirect]
     );

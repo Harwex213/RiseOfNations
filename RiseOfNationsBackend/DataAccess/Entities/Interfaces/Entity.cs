@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Common.Interfaces;
+namespace DataAccess.Entities.Interfaces;
 
 public abstract class Entity
 {
@@ -17,4 +16,12 @@ public abstract class Entity
 
     [Required]
     public bool IsDeleted { get; set; }
+
+    public void Delete()
+    {
+        IsDeleted = true;
+        Updated = DateTime.UtcNow;
+    }
+
+    public abstract void CascadeDelete();
 }

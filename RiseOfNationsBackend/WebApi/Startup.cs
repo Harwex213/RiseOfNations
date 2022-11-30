@@ -10,6 +10,8 @@ public class Startup
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
+        //
+        // Console.WriteLine("Configuration test: " + Configuration["Test"]);
     }
 
     private IConfiguration Configuration { get; }

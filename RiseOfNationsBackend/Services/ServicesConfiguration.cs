@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using DataAccess.Entities;
+using DataTransferObjects.Rest.GameVariable;
+using DataTransferObjects.Rest.Modificator;
+using DataTransferObjects.Rest.Realm;
 using DataTransferObjects.Rest.User;
 using Services.FilterServices;
 using Services.FilterServices.Interfaces;
@@ -29,10 +32,16 @@ public static class ServicesConfiguration
     private static void ConfigureFilterServices()
     {
         Services.AddScoped<IEntityFilterService<UserEntity>, UserFilterService>();
+        Services.AddScoped<IEntityFilterService<RealmEntity>, RealmFilterService>();
+        Services.AddScoped<IEntityFilterService<ModificatorEntity>, ModificatorFilterService>();
+        Services.AddScoped<IEntityFilterService<GameVariableEntity>, GameVariableFilterService>();
     }
     
     private static void ConfigureRestServices()
     {
         Services.AddScoped<IRestService<CreateUserRequestDto, UpdateUserRequestDto, UserResponseDto>, UserService>();
+        Services.AddScoped<IRestService<CreateRealmRequestDto, UpdateRealmRequestDto, RealmResponseDto>, RealmService>();
+        Services.AddScoped<IRestService<CreateModificatorRequestDto, UpdateModificatorRequestDto, ModificatorResponseDto>, ModificatorService>();
+        Services.AddScoped<IRestService<CreateGameVariableRequestDto, UpdateGameVariableRequestDto, GameVariableResponseDto>, GameVariableService>();
     }
 }
