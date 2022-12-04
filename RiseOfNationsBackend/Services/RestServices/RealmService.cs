@@ -5,6 +5,7 @@ using DataTransferObjects.Rest.Realm;
 using Microsoft.EntityFrameworkCore;
 using Services.Exceptions;
 using Services.FilterServices.Interfaces;
+using Services.InternalServices;
 using Services.RestServices.Base;
 using Services.RestServices.Interfaces;
 
@@ -20,7 +21,7 @@ public class RealmService : BaseRestService<RealmResponseDto, RealmEntity>,
     
     public async Task<RealmResponseDto> Add(CreateRealmRequestDto requestDto)
     {
-        return await RestServiceHelper.Execute(async () =>
+        return await ServiceHelper.Execute(async () =>
         {
             var entity = Mapper.Map<RealmEntity>(requestDto);
             
@@ -29,14 +30,14 @@ public class RealmService : BaseRestService<RealmResponseDto, RealmEntity>,
             entity.ModificatorId = requestDto.ModificatorId.Value;
             entity.UserId = requestDto.UserId.Value;
             
-            await RestServiceHelper.AddEntity(DbContext, DbSet, entity);
+            await ServiceHelper.AddEntity(DbContext, DbSet, entity);
             return Mapper.Map<RealmResponseDto>(entity);
         });
     }
 
     public async Task<RealmResponseDto> Update(long id, UpdateRealmRequestDto requestDto)
     {
-        return await RestServiceHelper.Execute(async () =>
+        return await ServiceHelper.Execute(async () =>
         {
             var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
             if (entity == null)
@@ -49,7 +50,7 @@ public class RealmService : BaseRestService<RealmResponseDto, RealmEntity>,
             entity.ModificatorId = requestDto.ModificatorId.Value;
             entity.UserId = requestDto.UserId.Value;
             
-            await RestServiceHelper.UpdateEntity(DbContext, DbSet, entity);
+            await ServiceHelper.UpdateEntity(DbContext, DbSet, entity);
             return Mapper.Map<RealmResponseDto>(entity);
         });
     }

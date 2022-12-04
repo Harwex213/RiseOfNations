@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Services.Exceptions;
 using Services.FilterServices.Interfaces;
+using Services.InternalServices;
 
 namespace Services.RestServices.Base;
 
@@ -28,7 +29,7 @@ public abstract class BaseRestService<TResponseDto, TEntity>
     protected IMapper Mapper { get; }
     protected IEntityFilterService<TEntity> FilterService { get; }
     protected DbSet<TEntity> DbSet { get; }
-    protected IQueryable<TEntity> UndeletedEntities => DbSet.Where(e => e.IsDeleted == false);
+    protected virtual IQueryable<TEntity> UndeletedEntities => DbSet.Where(e => e.IsDeleted == false);
 
     protected class DefaultEntityFilterDto
     {
@@ -117,7 +118,7 @@ public abstract class BaseRestService<TResponseDto, TEntity>
     
     public virtual async Task<TResponseDto> Delete(long id)
     {
-        return await RestServiceHelper.Execute(async () =>
+        return await ServiceHelper.Execute(async () =>
         {
             var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
             if (entity == null)
@@ -125,7 +126,7 @@ public abstract class BaseRestService<TResponseDto, TEntity>
                 throw new NotFoundException();
             }
 
-            await RestServiceHelper.DeleteEntity(DbContext, DbSet, entity);
+            await ServiceHelper.DeleteEntity(DbContext, DbSet, entity);
             return Mapper.Map<TResponseDto>(entity);
         });
     }

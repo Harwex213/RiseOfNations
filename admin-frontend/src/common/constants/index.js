@@ -11,3 +11,10 @@ export const routes = {
     toModificators: "/" + resources.modificators,
     toGameVariables: "/" + resources.gameVariables,
 };
+
+export const apiRoutes = {
+    authentication: {
+        login: process.env.REACT_APP_API_URL + "/authentication/admin-login",
+        logout: process.env.REACT_APP_API_URL + "/authentication/logout",
+    },
+};

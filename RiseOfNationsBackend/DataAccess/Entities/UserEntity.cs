@@ -18,13 +18,14 @@ public class UserEntity : Entity
     [MaxLength(UserConstraints.UsernameMaxLength)]
     public string Username { get; set; }
     
-    [MaxLength(UserConstraints.PasswordMaxLength)]
+    [MaxLength(UserConstraints.HashedPasswordMaxLength)]
     public string Password { get; set; }
     
     [MaxLength(UserConstraints.EmailMaxLength)]
     public string? Email { get; set; }
     
-    public UserRoles UserRole { get; set; }
+    [MaxLength(UserConstraints.UserRoleMaxLength)]
+    public string UserRole { get; set; }
     
     public virtual ICollection<RealmEntity> Realms { get; set; }
     

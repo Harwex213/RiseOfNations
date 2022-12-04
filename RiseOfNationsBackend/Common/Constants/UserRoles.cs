@@ -1,8 +1,8 @@
 ﻿namespace Common.Constants;
 
-public enum UserRoles
+public static class UserRoles
 {
-    Guest,
-    Player,
-    Admin
+    public const string Guest = "Guest";
+    public const string Player = "Player";
+    public const string Admin = "Admin";
 }

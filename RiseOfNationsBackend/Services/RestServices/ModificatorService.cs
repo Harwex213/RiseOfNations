@@ -5,6 +5,7 @@ using DataTransferObjects.Rest.Modificator;
 using Microsoft.EntityFrameworkCore;
 using Services.Exceptions;
 using Services.FilterServices.Interfaces;
+using Services.InternalServices;
 using Services.RestServices.Base;
 using Services.RestServices.Interfaces;
 
@@ -20,7 +21,7 @@ public class ModificatorService : BaseRestService<ModificatorResponseDto, Modifi
     
     public async Task<ModificatorResponseDto> Add(CreateModificatorRequestDto requestDto)
     {
-        return await RestServiceHelper.Execute(async () =>
+        return await ServiceHelper.Execute(async () =>
         {
             var entity = Mapper.Map<ModificatorEntity>(requestDto);
             
@@ -29,14 +30,14 @@ public class ModificatorService : BaseRestService<ModificatorResponseDto, Modifi
             entity.AffectedGameVariableId = requestDto.AffectedGameVariableId;
             entity.ModificatorValue = requestDto.ModificatorValue;
             
-            await RestServiceHelper.AddEntity(DbContext, DbSet, entity);
+            await ServiceHelper.AddEntity(DbContext, DbSet, entity);
             return Mapper.Map<ModificatorResponseDto>(entity);
         });
     }
 
     public async Task<ModificatorResponseDto> Update(long id, UpdateModificatorRequestDto requestDto)
     {
-        return await RestServiceHelper.Execute(async () =>
+        return await ServiceHelper.Execute(async () =>
         {
             var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
             if (entity == null)
@@ -49,7 +50,7 @@ public class ModificatorService : BaseRestService<ModificatorResponseDto, Modifi
             entity.AffectedGameVariableId = requestDto.AffectedGameVariableId;
             entity.ModificatorValue = requestDto.ModificatorValue;
             
-            await RestServiceHelper.UpdateEntity(DbContext, DbSet, entity);
+            await ServiceHelper.UpdateEntity(DbContext, DbSet, entity);
             return Mapper.Map<ModificatorResponseDto>(entity);
         });
     }

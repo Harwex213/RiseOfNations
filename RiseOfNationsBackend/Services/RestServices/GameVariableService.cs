@@ -5,6 +5,7 @@ using DataTransferObjects.Rest.GameVariable;
 using Microsoft.EntityFrameworkCore;
 using Services.Exceptions;
 using Services.FilterServices.Interfaces;
+using Services.InternalServices;
 using Services.RestServices.Base;
 using Services.RestServices.Interfaces;
 
@@ -25,7 +26,7 @@ public class GameVariableService : BaseRestService<GameVariableResponseDto, Game
 
     public async Task<GameVariableResponseDto> Update(long id, UpdateGameVariableRequestDto requestDto)
     {
-        return await RestServiceHelper.Execute(async () =>
+        return await ServiceHelper.Execute(async () =>
         {
             var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
             if (entity == null)
@@ -35,7 +36,7 @@ public class GameVariableService : BaseRestService<GameVariableResponseDto, Game
 
             entity.DefaultValue = requestDto.DefaultValue;
             
-            await RestServiceHelper.UpdateEntity(DbContext, DbSet, entity);
+            await ServiceHelper.UpdateEntity(DbContext, DbSet, entity);
             return Mapper.Map<GameVariableResponseDto>(entity);
         });
     }

@@ -3,6 +3,7 @@ using System.Text.Json;
 using DataTransferObjects;
 using DataTransferObjects.Error;
 using Services.Exceptions;
+using Services.Exceptions.Base;
 
 namespace WebApi.Middleware;
 
@@ -21,20 +22,23 @@ public class ErrorHandlerMiddleware
         {
             await _next(context);
         }
-        catch (Exception error)
+        catch (ServiceException serviceException)
         {
             var response = context.Response;
-            
-            var httpStatusCode = error switch
-            {
-                BadRequestException => HttpStatusCode.BadRequest,
-                NotFoundException => HttpStatusCode.NotFound,
-                _ => HttpStatusCode.InternalServerError
-            };
-            response.StatusCode = (int) httpStatusCode;
-            
+            response.StatusCode = serviceException.HttpCode;
             response.ContentType = "application/json";
-            var result = JsonSerializer.Serialize(new RequestErrorDto(error.Message), new JsonSerializerOptions
+            var result = JsonSerializer.Serialize(new RequestErrorDto(serviceException.Message), new JsonSerializerOptions
+            {
+                DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
+            });
+            await response.WriteAsync(result);
+        }
+        catch (Exception)
+        {
+            var response = context.Response;
+            response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            response.ContentType = "application/json";
+            var result = JsonSerializer.Serialize(new RequestErrorDto("Internal server error"), new JsonSerializerOptions
             {
                 DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
             });

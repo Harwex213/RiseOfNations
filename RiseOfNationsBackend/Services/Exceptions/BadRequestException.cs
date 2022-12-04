@@ -1,9 +1,12 @@
-﻿namespace Services.Exceptions;
+﻿using System.Net;
+using Services.Exceptions.Base;
 
-public class BadRequestException : ApplicationException
+namespace Services.Exceptions;
+
+public class BadRequestException : ServiceException
 {
     public BadRequestException(string message = "Bad request") : base(message) 
     {
-        
+        HttpCode = (int)HttpStatusCode.BadRequest;
     }
 }

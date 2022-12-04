@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Services.Exceptions;
 
-namespace Services.RestServices.Base;
+namespace Services.InternalServices;
 
-public static class RestServiceHelper
+public static class ServiceHelper
 {
-    public static void Execute(Action action)
+    public static async Task Execute(Action action)
     {
-        Execute(() =>
+        await Execute(() =>
         {
             action();
             return Task.FromResult(0);
@@ -32,7 +32,7 @@ public static class RestServiceHelper
                 var errorMessage = EntitiesConstraintNames.MapConstraintNameToError(postgresException.ConstraintName);
                 throw new BadRequestException(errorMessage);
             }
-            
+
             throw new BadRequestException();
         }
         catch (DbUpdateException e) when (e is CannotInsertNullException

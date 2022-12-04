@@ -1,5 +1,7 @@
-﻿using Common.Interfaces;
+﻿using Common.Constants;
+using Common.Interfaces;
 using DataTransferObjects.Rest;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Services.RestServices.Interfaces;
@@ -21,6 +23,7 @@ public class RestController<TRequestCreateDto, TRequestUpdateDto, TResponseDto> 
     private IRestService<TRequestCreateDto, TRequestUpdateDto, TResponseDto> Service { get; }
 
     [HttpGet]
+    [Authorize(Roles = UserRoles.Admin)]
     public async Task<IEnumerable<TResponseDto>> GetAll([FromQuery] GetAllRequestQueryDto getAllRequestQueryDto)
     {
         static void TryParseRange(GetAllDto getAllDto, GetAllRequestQueryDto getAllRequestQueryDto)
@@ -80,6 +83,7 @@ public class RestController<TRequestCreateDto, TRequestUpdateDto, TResponseDto> 
     }
  
     [HttpGet("{id}")]
+    [Authorize(Roles = UserRoles.Admin)]
     public async Task<TResponseDto> Get(long id)
     {
         return await Service.Get(id);
@@ -87,6 +91,7 @@ public class RestController<TRequestCreateDto, TRequestUpdateDto, TResponseDto> 
  
     [HttpPost]
     [ModelStateValidation]
+    [Authorize(Roles = UserRoles.Admin)]
     public async Task<TResponseDto> Create([FromBody] TRequestCreateDto requestDto)
     {
         return await Service.Add(requestDto);
@@ -94,6 +99,7 @@ public class RestController<TRequestCreateDto, TRequestUpdateDto, TResponseDto> 
     
     [HttpPut("{id}")]
     [ModelStateValidation]
+    [Authorize(Roles = UserRoles.Admin)]
     public async Task<TResponseDto> Update(long id, [FromBody] TRequestUpdateDto requestDto)
     {
         return await Service.Update(id, requestDto);
@@ -101,6 +107,7 @@ public class RestController<TRequestCreateDto, TRequestUpdateDto, TResponseDto> 
     
     [HttpDelete("{id}")]
     [ModelStateValidation]
+    [Authorize(Roles = UserRoles.Admin)]
     public async Task<TResponseDto> Delete(long id)
     {
         return await Service.Delete(id);

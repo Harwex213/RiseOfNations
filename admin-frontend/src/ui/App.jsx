@@ -1,7 +1,8 @@
 import React from "react";
 import { Admin, Resource } from "react-admin";
-import simpleRestProvider from "ra-data-simple-rest";
 import { AppLayout } from "./layout/AppLayout";
+import { dataProvider } from "./dataProvider";
+import { authProvider } from "./authProvider";
 import { resources } from "../common/constants";
 import { UserList, UserCreate, UserEdit } from "./users";
 import { GameVariableList, GameVariableEdit } from "./gameVariables";
@@ -9,7 +10,7 @@ import { ModificatorList, ModificatorCreate, ModificatorEdit } from "./modificat
 import { RealmList, RealmCreate, RealmEdit } from "./realms";
 
 const App = () => (
-    <Admin layout={AppLayout} dataProvider={simpleRestProvider(process.env.REACT_APP_REST_API_URL)}>
+    <Admin layout={AppLayout} dataProvider={dataProvider} authProvider={authProvider} requireAuth>
         <Resource name={resources.users} list={UserList} create={UserCreate} edit={UserEdit} />
         <Resource name={resources.realms} list={RealmList} create={RealmCreate} edit={RealmEdit} />
         <Resource

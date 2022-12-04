@@ -1,6 +1,7 @@
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Services;
+using WebApi.Authentication;
 using WebApi.Middleware;
 
 namespace WebApi;
@@ -10,8 +11,6 @@ public class Startup
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
-        //
-        // Console.WriteLine("Configuration test: " + Configuration["Test"]);
     }
 
     private IConfiguration Configuration { get; }
@@ -22,8 +21,24 @@ public class Startup
         
         ServicesConfiguration.Configure(services);
         
+        services.AddDistributedMemoryCache();
+
+        services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromDays(1);
+
+            options.Cookie.IsEssential = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            options.Cookie.SameSite = SameSiteMode.None;
+        });
+        
+        services.AddOptions<SessionAuthenticationSchemeOptions>();
+        services.AddAuthentication(SessionAuthenticationSchemeOptions.SchemeName)
+            .AddScheme<SessionAuthenticationSchemeOptions, SessionAuthenticationSchemeHandler>(
+                SessionAuthenticationSchemeOptions.SchemeName, null
+            );
+
         services.AddControllers();
-            // .ConfigureApplicationPartManager(m => m.FeatureProviders.Add(new GenericRestControllerFeatureProvider()));
         
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(o =>
@@ -41,9 +56,10 @@ public class Startup
 
             app.UseCors(b =>
             {
-                b.AllowAnyOrigin();
+                b.SetIsOriginAllowed(_ => true);
                 b.AllowAnyHeader();
                 b.AllowAnyMethod();
+                b.AllowCredentials();
                 b.WithExposedHeaders("Content-Range");
             });
         }
@@ -54,7 +70,9 @@ public class Startup
         }
 
         app.UseHttpsRedirection();
+        app.UseSession();
         app.UseMiddleware<ErrorHandlerMiddleware>();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
     }

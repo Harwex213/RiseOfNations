@@ -6,8 +6,12 @@ using DataTransferObjects.Rest.Realm;
 using DataTransferObjects.Rest.User;
 using Services.FilterServices;
 using Services.FilterServices.Interfaces;
+using Services.InternalServices;
+using Services.InternalServices.Interfaces;
 using Services.RestServices;
 using Services.RestServices.Interfaces;
+using Services.RpcServices;
+using Services.RpcServices.Interfaces;
 
 namespace Services;
 
@@ -22,6 +26,8 @@ public static class ServicesConfiguration
         ConfigureAutomapperProfiles();
         ConfigureFilterServices();
         ConfigureRestServices();
+        ConfigureRpcServices();
+        ConfigureInternalServices();
     }
 
     private static void ConfigureAutomapperProfiles()
@@ -43,5 +49,15 @@ public static class ServicesConfiguration
         Services.AddScoped<IRestService<CreateRealmRequestDto, UpdateRealmRequestDto, RealmResponseDto>, RealmService>();
         Services.AddScoped<IRestService<CreateModificatorRequestDto, UpdateModificatorRequestDto, ModificatorResponseDto>, ModificatorService>();
         Services.AddScoped<IRestService<CreateGameVariableRequestDto, UpdateGameVariableRequestDto, GameVariableResponseDto>, GameVariableService>();
+    }
+
+    private static void ConfigureRpcServices()
+    {
+        Services.AddScoped<IAuthService, AuthService>();
+    }
+    
+    private static void ConfigureInternalServices()
+    {
+        Services.AddSingleton<IPasswordHasher, PasswordHasher>();
     }
 }

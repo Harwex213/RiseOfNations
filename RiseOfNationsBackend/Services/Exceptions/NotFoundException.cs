@@ -1,9 +1,12 @@
-﻿namespace Services.Exceptions;
+﻿using System.Net;
+using Services.Exceptions.Base;
 
-public class NotFoundException : ApplicationException
+namespace Services.Exceptions;
+
+public class NotFoundException : ServiceException
 {
-    public NotFoundException(string message = "Not found") : base(message) 
+    public NotFoundException(string message = "Not found") : base(message)
     {
-        
+        HttpCode = (int)HttpStatusCode.NotFound;
     }
 }

@@ -3,6 +3,7 @@ using System;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221204100743_UpdateUserRole")]
+    partial class UpdateUserRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +54,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GameVariableEntities", (string)null);
+                    b.ToTable("GameVariableEntities");
 
                     b.HasData(
                         new
@@ -195,7 +198,7 @@ namespace DataAccess.Migrations
                     b.HasIndex(new[] { "Name" }, "ModificatorEntityName")
                         .IsUnique();
 
-                    b.ToTable("ModificatorEntities", (string)null);
+                    b.ToTable("ModificatorEntities");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.RealmEntity", b =>
@@ -239,7 +242,7 @@ namespace DataAccess.Migrations
                     b.HasIndex(new[] { "Name" }, "RealmEntityName")
                         .IsUnique();
 
-                    b.ToTable("RealmEntities", (string)null);
+                    b.ToTable("RealmEntities");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.UserEntity", b =>
@@ -283,7 +286,7 @@ namespace DataAccess.Migrations
                     b.HasIndex(new[] { "Username" }, "UserEntityUsername")
                         .IsUnique();
 
-                    b.ToTable("UserEntities", (string)null);
+                    b.ToTable("UserEntities");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ModificatorEntity", b =>
