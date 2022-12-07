@@ -54,10 +54,13 @@ public static class ServicesConfiguration
     private static void ConfigureRpcServices()
     {
         Services.AddScoped<IAuthService, AuthService>();
+        Services.AddScoped<IGameInfoService, GameInfoService>();
+        Services.AddScoped<IRealmsService, RealmsService>();
     }
     
     private static void ConfigureInternalServices()
     {
         Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        Services.AddSingleton<IFileUploader, FileUploader>();
     }
 }

@@ -24,8 +24,7 @@ public class UserService : BaseRestService<UserResponseDto, UserEntity>,
     
     public IPasswordHasher PasswordHasher { get; set; }
 
-    protected override IQueryable<UserEntity> UndeletedEntities => DbSet.Where(e => e.IsDeleted == false && 
-        e.UserRole == UserRoles.Player);
+    protected override IQueryable<UserEntity> QueryableDbSet => DbSet.Where(e => e.UserRole == UserRoles.Player);
 
     public async Task<UserResponseDto> Add(CreateUserRequestDto requestDto)
     {
@@ -45,7 +44,7 @@ public class UserService : BaseRestService<UserResponseDto, UserEntity>,
     {
         return await ServiceHelper.Execute(async () =>
         {
-            var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
+            var entity = await QueryableDbSet.FirstOrDefaultAsync(entity => entity.Id == id);
             if (entity == null)
             {
                 throw new NotFoundException();

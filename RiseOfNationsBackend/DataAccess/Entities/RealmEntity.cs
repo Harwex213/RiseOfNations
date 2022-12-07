@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Entities;
 
-[Index(nameof(Name), IsUnique = true, Name = EntitiesConstraintNames.RealmEntityName)]
 public class RealmEntity : Entity
 {
     [MaxLength(RealmConstraints.NameMaxLength)]
@@ -19,6 +18,11 @@ public class RealmEntity : Entity
     public long UserId { get; set; }
     
     public long ModificatorId { get; set; }
+
+    public Guid FlagId { get; set; }
+    
+    [MaxLength(RealmConstraints.FlagExtensionMaxLength)]
+    public string? FlagExtension { get; set; }
     
     [ForeignKey(nameof(UserId))]
     public virtual UserEntity User { get; set; }

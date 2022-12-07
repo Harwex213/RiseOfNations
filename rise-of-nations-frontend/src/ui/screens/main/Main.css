@@ -1,0 +1,55 @@
+.grid {
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.grid__row {
+    display: flex;
+    flex-direction: row;
+}
+
+.tile {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border: 0.01em #000 solid;
+    box-sizing: border-box;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
+
+.tile__background {
+    object-fit: contain;
+    user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.tile__unit {
+    display: flex;
+    position: absolute;
+    width: 25px;
+    user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.tile__unit:hover {
+    cursor: pointer;
+}
+
+.tile__unit_red .tileUnit__body {
+    fill: red;
+}
+
+.tile__unit_blue .tileUnit__body {
+    fill: blue;
+}

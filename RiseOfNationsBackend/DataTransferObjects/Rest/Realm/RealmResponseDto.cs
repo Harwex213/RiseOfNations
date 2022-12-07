@@ -8,4 +8,6 @@ public class RealmResponseDto : ResponseDto
     public string Description { get; set; }
     public long UserId { get; set; }
     public long ModificatorId { get; set; }
+    public Guid FlagId { get; set; }
+    public string FlagExtension { get; set; }
 }

@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import {
     Edit,
+    ImageField,
+    ImageInput,
     ReferenceInput,
     SelectInput,
     SimpleForm,
@@ -12,14 +14,21 @@ import {
 import { resources, routes } from "../../common/constants";
 import { apiService } from "../../service";
 import { options } from "./utils";
+import { fileToBase64 } from "../../common/utils";
 
 export const RealmEdit = () => {
     const redirect = useRedirect();
     const notify = useNotify();
     const [update] = useUpdate();
-    const save = useCallback(
-        async (values) => {
-            return await apiService.updateEntity({
+    const save = async (values) => {
+        try {
+            if (values.flag) {
+                values.flagFileName = values.flag.title;
+                const result = await fileToBase64(values.flag.rawFile);
+                values.flagBase64 = result.split("base64,")[1];
+            }
+            delete values.flag;
+            await apiService.updateEntity({
                 update,
                 notify,
                 redirect,
@@ -28,9 +37,12 @@ export const RealmEdit = () => {
                 redirectOnSuccessTo: routes.toRealms,
                 defaultKeyForError: "name",
             });
-        },
-        [update, notify, redirect]
-    );
+        } catch (e) {
+            return {
+                flag: "Error while trying to convert file to base64 string",
+            };
+        }
+    };
 
     return (
         <Edit>
@@ -44,6 +56,9 @@ export const RealmEdit = () => {
                 <ReferenceInput source="modificatorId" reference={resources.modificators}>
                     <SelectInput optionText={options.modificatorOption} fullWidth />
                 </ReferenceInput>
+                <ImageInput source="flag" label="Realm flag" accept=".png,.jpg,.jpeg,.webp" maxSize={1000000}>
+                    <ImageField source="src" title="title" />
+                </ImageInput>
             </SimpleForm>
         </Edit>
     );

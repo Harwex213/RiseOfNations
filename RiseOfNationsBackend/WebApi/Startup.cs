@@ -1,3 +1,4 @@
+using Common.Constants.Configuration;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Services;
@@ -49,6 +50,8 @@ public class Startup
 
     public void Configure(WebApplication app, IWebHostEnvironment env)
     {
+        FileUploaderConfiguration.WebRootPath = env.WebRootPath;
+        
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -70,6 +73,7 @@ public class Startup
         }
 
         app.UseHttpsRedirection();
+        app.UseStaticFiles("/static");
         app.UseSession();
         app.UseMiddleware<ErrorHandlerMiddleware>();
         app.UseAuthentication();

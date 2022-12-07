@@ -18,4 +18,7 @@ public class UpdateRealmRequestDto : RequestDto
     
     [Required(ErrorMessage = RealmConstraintsErrorMessages.ModificatorIdRequired)]
     public long? ModificatorId { get; set; }
+    
+    public string? FlagBase64 { get; set; }
+    public string? FlagFileName { get; set; }
 }

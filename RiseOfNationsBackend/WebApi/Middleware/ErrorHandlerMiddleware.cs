@@ -29,6 +29,7 @@ public class ErrorHandlerMiddleware
             response.ContentType = "application/json";
             var result = JsonSerializer.Serialize(new RequestErrorDto(serviceException.Message), new JsonSerializerOptions
             {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
             });
             await response.WriteAsync(result);
@@ -40,6 +41,7 @@ public class ErrorHandlerMiddleware
             response.ContentType = "application/json";
             var result = JsonSerializer.Serialize(new RequestErrorDto("Internal server error"), new JsonSerializerOptions
             {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
             });
             await response.WriteAsync(result);

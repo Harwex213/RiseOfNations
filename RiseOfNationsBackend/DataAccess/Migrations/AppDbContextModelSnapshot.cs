@@ -192,8 +192,10 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("AffectedGameVariableId");
 
-                    b.HasIndex(new[] { "Name" }, "ModificatorEntityName")
-                        .IsUnique();
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ModificatorEntityName")
+                        .HasFilter("\"IsDeleted\" = false");
 
                     b.ToTable("ModificatorEntities", (string)null);
                 });
@@ -212,6 +214,13 @@ namespace DataAccess.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
+
+                    b.Property<string>("FlagExtension")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<Guid>("FlagId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -235,9 +244,6 @@ namespace DataAccess.Migrations
                     b.HasIndex("ModificatorId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex(new[] { "Name" }, "RealmEntityName")
-                        .IsUnique();
 
                     b.ToTable("RealmEntities", (string)null);
                 });
@@ -280,8 +286,10 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Username" }, "UserEntityUsername")
-                        .IsUnique();
+                    b.HasIndex("Username")
+                        .IsUnique()
+                        .HasDatabaseName("UserEntityUsername")
+                        .HasFilter("\"IsDeleted\" = false");
 
                     b.ToTable("UserEntities", (string)null);
                 });

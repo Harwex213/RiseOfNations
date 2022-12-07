@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Entities;
 
-[Index(nameof(Username), IsUnique = true, Name = EntitiesConstraintNames.UserEntityUsername)]
 public class UserEntity : Entity
 {
     public UserEntity()

@@ -1,25 +1,34 @@
-import React, { useCallback } from "react";
+import React from "react";
 import {
     Create,
+    ImageField,
+    ImageInput,
+    ReferenceInput,
+    SelectInput,
     SimpleForm,
     TextInput,
     useCreate,
     useNotify,
     useRedirect,
-    ReferenceInput,
-    SelectInput,
 } from "react-admin";
 import { resources, routes } from "../../common/constants";
-import { apiService } from "../../service";
 import { options } from "./utils";
+import { fileToBase64 } from "../../common/utils";
+import { apiService } from "../../service";
 
 export const RealmCreate = () => {
     const redirect = useRedirect();
     const notify = useNotify();
     const [create] = useCreate();
-    const save = useCallback(
-        async (values) => {
-            return await apiService.createEntity({
+    const save = async (values) => {
+        try {
+            if (values.flag) {
+                values.flagFileName = values.flag.title;
+                const result = await fileToBase64(values.flag.rawFile);
+                values.flagBase64 = result.split("base64,")[1];
+            }
+            delete values.flag;
+            await apiService.createEntity({
                 create,
                 notify,
                 redirect,
@@ -28,9 +37,10 @@ export const RealmCreate = () => {
                 redirectOnSuccessTo: routes.toRealms,
                 defaultKeyForError: "name",
             });
-        },
-        [create, notify, redirect]
-    );
+        } catch (e) {
+            console.error("Error while trying to convert file to base64 string");
+        }
+    };
 
     return (
         <Create>
@@ -43,6 +53,9 @@ export const RealmCreate = () => {
                 <ReferenceInput source="modificatorId" reference={resources.modificators}>
                     <SelectInput optionText={options.modificatorOption} fullWidth />
                 </ReferenceInput>
+                <ImageInput source="flag" label="Realm flag" accept=".png,.jpg,.jpeg,.webp" maxSize={1000000}>
+                    <ImageField source="src" title="title" />
+                </ImageInput>
             </SimpleForm>
         </Create>
     );

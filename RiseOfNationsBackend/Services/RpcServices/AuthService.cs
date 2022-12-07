@@ -31,7 +31,7 @@ public class AuthService : IAuthService
         {
             if (registerDto.Password != registerDto.RepeatPassword)
             {
-                throw new BadRequestException(AuthenticationErrorMessages.InvalidUserData);
+                throw new BadRequestException(AuthenticationErrorMessages.InvalidRegistrationData);
             }
 
             var entity = Mapper.Map<UserEntity>(registerDto);
@@ -45,15 +45,14 @@ public class AuthService : IAuthService
 
     public async Task<DescribeUserResponseDto> Login(LoginDto loginDto)
     {
-        var user = await DbContext.UserEntities.Where(u => u.IsDeleted == false)
-            .FirstOrDefaultAsync(u => u.Username == loginDto.Username);
+        var user = await DbContext.UserEntities.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
         if (user == null)
         {
-            throw new NotAuthorizedException();
+            throw new NotAuthorizedException(AuthenticationErrorMessages.BadCredentials);
         }
         if (PasswordHasher.VerifyPassword(loginDto.Password, user.Password) == false)
         {
-            throw new NotAuthorizedException();
+            throw new NotAuthorizedException(AuthenticationErrorMessages.BadCredentials);
         }
 
         return Mapper.Map<DescribeUserResponseDto>(user);
@@ -61,11 +60,10 @@ public class AuthService : IAuthService
 
     public async Task<DescribeUserResponseDto> Login(LoginDto loginDto, string targetRole)
     {
-        var user = await DbContext.UserEntities.Where(u => u.IsDeleted == false)
-            .FirstOrDefaultAsync(u => u.Username == loginDto.Username);
+        var user = await DbContext.UserEntities.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
         if (user == null)
         {
-            throw new NotAuthorizedException();
+            throw new NotAuthorizedException(AuthenticationErrorMessages.BadCredentials);
         }
         if (PasswordHasher.VerifyPassword(loginDto.Password, user.Password) == false)
         {
@@ -73,7 +71,7 @@ public class AuthService : IAuthService
         }
         if (user.UserRole != targetRole)
         {
-            throw new NotAuthorizedException();
+            throw new NotAuthorizedException(AuthenticationErrorMessages.BadCredentials);
         }
 
         return Mapper.Map<DescribeUserResponseDto>(user);

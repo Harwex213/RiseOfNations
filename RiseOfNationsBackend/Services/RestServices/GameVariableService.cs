@@ -28,7 +28,7 @@ public class GameVariableService : BaseRestService<GameVariableResponseDto, Game
     {
         return await ServiceHelper.Execute(async () =>
         {
-            var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
+            var entity = await DbSet.FirstOrDefaultAsync(entity => entity.Id == id);
             if (entity == null)
             {
                 throw new NotFoundException();

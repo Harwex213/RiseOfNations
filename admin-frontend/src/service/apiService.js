@@ -1,6 +1,18 @@
 import { toObjectWithCamelCaseKeys } from "../common/utils";
 
 export const apiService = {
+    suspenseError: (action, defaultKeyForError) => async (values) => {
+        try {
+            await action(values);
+        } catch (error) {
+            if (error.body.errors) {
+                return toObjectWithCamelCaseKeys(error.body.errors);
+            }
+            return {
+                [defaultKeyForError]: error.body.message,
+            };
+        }
+    },
     createEntity: async ({
         create,
         notify,

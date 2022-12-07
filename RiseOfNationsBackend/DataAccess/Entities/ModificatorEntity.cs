@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Entities;
 
-[Index(nameof(Name), IsUnique = true, Name = EntitiesConstraintNames.ModificatorEntityName)]
 public class ModificatorEntity : Entity
 {
     public ModificatorEntity()

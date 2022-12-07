@@ -4,6 +4,7 @@ public class RealmConstraints
 {
     public const int NameMaxLength = 64;
     public const int DescriptionMaxLength = 256;
+    public const int FlagExtensionMaxLength = 10;
 }
 
 public class RealmConstraintsErrorMessages

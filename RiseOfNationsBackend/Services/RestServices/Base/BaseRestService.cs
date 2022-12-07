@@ -29,14 +29,13 @@ public abstract class BaseRestService<TResponseDto, TEntity>
     protected IMapper Mapper { get; }
     protected IEntityFilterService<TEntity> FilterService { get; }
     protected DbSet<TEntity> DbSet { get; }
-    protected virtual IQueryable<TEntity> UndeletedEntities => DbSet.Where(e => e.IsDeleted == false);
+    protected virtual IQueryable<TEntity> QueryableDbSet => DbSet.AsQueryable();
 
     protected class DefaultEntityFilterDto
     {
         public object? Id { get; set; }
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
-        public bool? IsDeleted { get; set; }
     }
 
     public virtual async Task<(IEnumerable<TResponseDto>, int count)> GetAll(GetAllDto getAllDto)
@@ -63,10 +62,6 @@ public abstract class BaseRestService<TResponseDto, TEntity>
             {
                 entities = entities.Where(e => e.Updated == defaultEntityFilterDto.Updated);
             }
-            if (defaultEntityFilterDto.IsDeleted != null)
-            {
-                entities = entities.Where(e => e.IsDeleted == defaultEntityFilterDto.IsDeleted);
-            }
 
             return entities;
         }
@@ -88,7 +83,7 @@ public abstract class BaseRestService<TResponseDto, TEntity>
             return FilterService.FilterByJObject(entities, filter);
         }
         
-        var entities = UndeletedEntities;
+        var entities = QueryableDbSet;
 
         if (string.IsNullOrEmpty(getAllDto.Filter) == false)
         {
@@ -107,20 +102,20 @@ public abstract class BaseRestService<TResponseDto, TEntity>
         }
 
         var response = Mapper.Map<List<TResponseDto>>(await entities.ToListAsync());
-        var currentEntitiesCount = await UndeletedEntities.CountAsync();
+        var currentEntitiesCount = await QueryableDbSet.CountAsync();
         return (response, currentEntitiesCount);
     }
     
     public virtual async Task<TResponseDto> Get(long id)
     {
-        return Mapper.Map<TResponseDto>(await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id));
+        return Mapper.Map<TResponseDto>(await QueryableDbSet.FirstOrDefaultAsync(entity => entity.Id == id));
     }
     
     public virtual async Task<TResponseDto> Delete(long id)
     {
         return await ServiceHelper.Execute(async () =>
         {
-            var entity = await UndeletedEntities.FirstOrDefaultAsync(entity => entity.Id == id);
+            var entity = await QueryableDbSet.FirstOrDefaultAsync(entity => entity.Id == id);
             if (entity == null)
             {
                 throw new NotFoundException();
