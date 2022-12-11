@@ -9,7 +9,7 @@ export const FetchProgress = observer(() => {
             sx={{
                 position: "absolute",
                 width: "100%",
-                display: stores.globalState.isFetching ? "block" : "none",
+                display: stores.ui.isFetching ? "block" : "none",
             }}
         >
             <LinearProgress />

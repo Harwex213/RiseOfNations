@@ -1,34 +1,16 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
-import { games } from "../../../common/localization";
-import { Box, Paper, Stack } from "@mui/material";
-
-const Game = () => (
-    <Paper elevation={3} sx={{ height: "100px" }}>
-        This is the game!
-    </Paper>
-);
+import { Box } from "@mui/material";
+import { GameList } from "../../containers";
+import { Routes, Route } from "react-router-dom";
+import { routes } from "../../../common/constants";
 
 export const GamesScreen = () => {
     return (
-        <Box
-            sx={{ width: "50%", height: "100%" }}
-            display="grid"
-            gridTemplateRows="40px repeat(11, 1fr)"
-            gap={1}
-        >
-            <Box gridRow="1" display="flex" sx={{ justifyContent: "center" }}>
-                <Button variant="outlined">{games.createGame}</Button>
-            </Box>
-            <Box gridRow="span 11">
-                <Paper sx={{ width: "100%", maxHeight: "100%", padding: 2, overflowX: "auto" }}>
-                    <Stack spacing={2}>
-                        {Array.from(Array(10), () => 0).map((_, index) => (
-                            <Game key={index} />
-                        ))}
-                    </Stack>
-                </Paper>
-            </Box>
+        <Box sx={{ width: "100%", height: "100%", overflowY: "hidden", p: 2, pb: 0 }}>
+            <Routes>
+                <Route path={routes.gamesNested.index} element={<GameList />} />
+                {/*<Route path={routes.gamesNested.joinToGame} element={<GameList />} />*/}
+            </Routes>
         </Box>
     );
 };

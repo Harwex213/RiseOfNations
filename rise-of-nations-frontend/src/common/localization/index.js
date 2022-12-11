@@ -7,3 +7,5 @@ export { profile } from "./screens/profile";
 export { realms } from "./screens/realms";
 
 export { apiErrors } from "./api/apiErrors";
+
+export const validationRequiredMessage = (fieldName) => `${fieldName} is required`;

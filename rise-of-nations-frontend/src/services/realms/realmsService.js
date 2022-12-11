@@ -1,13 +1,13 @@
-import { apiClient, apiErrorSuspense } from "../../apiClient";
+import { apiClient, suspenseApiError } from "../../apiClient";
 import { realmsTransform } from "../../transform/realmsTransform";
 import { stores } from "../../store";
 
-const realmsStore = stores.realms;
+const userStore = stores.user;
 
 export const realmsService = {
-    getRealms: apiErrorSuspense(async () => {
+    getRealms: suspenseApiError(async () => {
         const { payload } = await apiClient.realmsClient.getUserRealms();
         const userRealms = realmsTransform.mapRealmsFromApi(payload);
-        realmsStore.setRealms(userRealms);
+        userStore.setRealms(userRealms);
     }),
 };

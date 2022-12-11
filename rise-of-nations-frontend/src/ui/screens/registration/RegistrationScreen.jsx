@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { registration } from "../../../common/localization";
 import { routes } from "../../../common/constants";
 import * as yup from "yup";
-import { Input } from "../../components/common/Input";
+import { Input } from "../../components";
 import { authenticationService } from "../../../services";
 import { useSnackbar } from "notistack";
 import { suspenseServiceError } from "../../../common/utils";

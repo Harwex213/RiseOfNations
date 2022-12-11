@@ -16,7 +16,7 @@ import { stores } from "../../../store";
 import { routes } from "../../../common/constants";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const globalState = stores.globalState;
+const userStore = stores.user;
 
 const PlayerMenu = observer(({ navigate, currentPath }) => (
     <>
@@ -83,7 +83,7 @@ export const Menu = observer(() => {
                 {menu.mainTitle}
             </Typography>
             <MenuList>
-                {globalState.user.isAuthenticated ? (
+                {userStore.user.isAuthenticated ? (
                     <PlayerMenu navigate={navigate} currentPath={location.pathname} />
                 ) : (
                     <GuestMenu navigate={navigate} currentPath={location.pathname} />

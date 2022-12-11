@@ -18,7 +18,8 @@ const api = ky.create({
                 if (response.status === 401 || response.status === 403) {
                     authenticationService.onUnauthorized();
                 }
-                response.payload = await response.json();
+                const responseError = await response.text();
+                response.payload = responseError === "" ? {} : JSON.parse(responseError);
                 return response;
             },
         ],

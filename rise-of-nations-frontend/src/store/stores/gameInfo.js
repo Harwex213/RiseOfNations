@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-export default class GameInfo {
+export default class GameInfoStore {
     gameVariables;
     modificators;
 

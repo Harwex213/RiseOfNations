@@ -9,7 +9,7 @@ import { login } from "../../../common/localization";
 import { routes } from "../../../common/constants";
 import * as yup from "yup";
 import { authenticationService } from "../../../services";
-import { Input } from "../../components/common/Input";
+import { Input } from "../../components";
 import { useSnackbar } from "notistack";
 import { suspenseServiceError } from "../../../common/utils";
 

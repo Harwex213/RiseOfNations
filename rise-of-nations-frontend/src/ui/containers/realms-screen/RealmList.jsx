@@ -11,7 +11,7 @@ import { useSnackbar } from "notistack";
 import { observer } from "mobx-react-lite";
 import { stores } from "../../../store";
 
-const realmsStore = stores.realms;
+const userStore = stores.user;
 
 export const RealmList = observer(() => {
     const navigate = useNavigate();
@@ -35,8 +35,8 @@ export const RealmList = observer(() => {
                         {realms.realmListActions.createRealm}
                     </Button>
                 </Grid2>
-                {realmsStore.userRealms.map((realm, index) => (
-                    <Grid2 item key={index} xs={6}>
+                {userStore.userRealms.map((realm) => (
+                    <Grid2 item key={realm.id} xs={6}>
                         <Realm
                             realm={realm}
                             elevation={1}

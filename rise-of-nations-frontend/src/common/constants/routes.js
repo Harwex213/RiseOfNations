@@ -2,6 +2,10 @@ export const routes = {
     index: "/",
     defaultRoute: "/games",
     games: "/games",
+    gamesNested: {
+        index: "",
+        joinToGame: ":gameId",
+    },
     profile: "/profile",
     realms: "/realms",
     realmsNested: {

@@ -1,21 +1,21 @@
-import { apiClient, apiErrorSuspense } from "../../apiClient";
+import { apiClient, suspenseApiError } from "../../apiClient";
 import { authenticationTransform } from "../../transform/authenticationTransform";
 import { stores } from "../../store";
 
-const globalState = stores.globalState;
+const userStore = stores.user;
 
 export const authenticationService = {
-    login: apiErrorSuspense(async (values) => {
+    login: suspenseApiError(async (values) => {
         const valuesToSend = authenticationTransform.mapToLogin(values);
         const { payload: userIdentity } = await apiClient.authenticationClient.login(valuesToSend);
         const user = authenticationTransform.mapUserIdentity(userIdentity);
-        globalState.setUserIdentity(user);
+        userStore.setUser(user);
     }),
-    register: apiErrorSuspense(async (values) => {
+    register: suspenseApiError(async (values) => {
         const valuesToSend = authenticationTransform.mapToRegister(values);
         const { payload: userIdentity } = await apiClient.authenticationClient.register(valuesToSend);
         const user = authenticationTransform.mapUserIdentity(userIdentity);
-        globalState.setUserIdentity(user);
+        userStore.setUser(user);
     }),
     logout: async () => {
         try {
@@ -23,15 +23,15 @@ export const authenticationService = {
         } catch (e) {
             // ignored
         } finally {
-            globalState.clearUserIdentity();
+            userStore.clearUser();
         }
     },
-    describe: apiErrorSuspense(async () => {
+    describe: suspenseApiError(async () => {
         const { payload: userIdentity } = await apiClient.authenticationClient.describe();
         const user = authenticationTransform.mapUserIdentity(userIdentity);
-        globalState.setUserIdentity(user);
+        userStore.setUser(user);
     }),
     onUnauthorized: () => {
-        globalState.clearUserIdentity();
+        userStore.clearUser();
     },
 };

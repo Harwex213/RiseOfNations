@@ -1,8 +1,8 @@
 import { makeAutoObservable } from "mobx";
 
-export default class GlobalState {
+export default class UserStore {
     user;
-    fetchCounter;
+    userRealms;
 
     constructor() {
         this.user = {
@@ -10,29 +10,21 @@ export default class GlobalState {
             username: "Guest",
             isAuthenticated: false,
         };
-        this.fetchCounter = 0;
+        this.userRealms = [];
         makeAutoObservable(this);
     }
 
-    get isFetching() {
-        return this.fetchCounter > 0;
+    setRealms(realms) {
+        this.userRealms = realms;
     }
 
-    increaseFetchCounter() {
-        this.fetchCounter = this.fetchCounter + 1;
-    }
-
-    decreaseFetchCounter() {
-        this.fetchCounter = this.fetchCounter - 1;
-    }
-
-    setUserIdentity(user) {
+    setUser(user) {
         this.user.id = user.id;
         this.user.username = user.username;
         this.user.isAuthenticated = true;
     }
 
-    clearUserIdentity() {
+    clearUser() {
         this.user.id = null;
         this.user.username = "Guest";
         this.user.isAuthenticated = false;

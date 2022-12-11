@@ -9,7 +9,7 @@ export const apiClient = {
     realmsClient,
 };
 
-export const apiErrorSuspense =
+export const suspenseApiError =
     (action) =>
     async (...values) => {
         try {
@@ -21,6 +21,9 @@ export const apiErrorSuspense =
                 }
                 if (e.response.payload?.message) {
                     throw new Error(e.response.payload.message);
+                }
+                if (e.response.status === 401) {
+                    throw new Error(apiErrors.unauthorized);
                 }
                 throw new Error(apiErrors.undefinedError);
             }

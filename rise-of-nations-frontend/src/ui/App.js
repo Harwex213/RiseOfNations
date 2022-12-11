@@ -7,7 +7,6 @@ import { GamesScreen, ProfileScreen, LoginScreen, RegistrationScreen, RealmsScre
 import { AuthenticatedAccess, Layout, OnlyGuestAccess, FetchProgress } from "./containers";
 import { authenticationService, gameInfoService } from "../services";
 import { useSnackbar } from "notistack";
-import { suspenseServiceError } from "../common/utils";
 
 const darkTheme = createTheme({
     palette: {
@@ -18,9 +17,7 @@ const darkTheme = createTheme({
 function App() {
     const { enqueueSnackbar } = useSnackbar();
     useLayoutEffect(() => {
-        suspenseServiceError(async () => {
-            await authenticationService.describe();
-        }, enqueueSnackbar)();
+        authenticationService.describe().catch(() => {});
         gameInfoService.getGameInfo().catch(() => {});
     }, [enqueueSnackbar]);
 
@@ -30,7 +27,7 @@ function App() {
             <FetchProgress />
             <Layout>
                 <Routes>
-                    <Route path={routes.games} element={<GamesScreen />} />
+                    <Route path={`${routes.games}/*`} element={<GamesScreen />} />
                     <Route
                         path={routes.profile}
                         element={

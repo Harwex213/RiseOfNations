@@ -2,12 +2,12 @@ import { stores } from "../../store";
 
 export const fetchStatusService = {
     onFetchStart: () => {
-        stores.globalState.increaseFetchCounter();
+        stores.ui.increaseFetchCounter();
     },
     onFetchFinish: () => {
-        stores.globalState.decreaseFetchCounter();
+        stores.ui.decreaseFetchCounter();
     },
     onFetchUnreachable: () => {
-        stores.globalState.decreaseFetchCounter();
+        stores.ui.decreaseFetchCounter();
     },
 };

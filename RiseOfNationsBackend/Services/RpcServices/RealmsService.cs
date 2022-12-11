@@ -20,7 +20,8 @@ public class RealmsService : IRealmsService
     
     public async Task<ICollection<RealmResponseDto>> GetUserRealms(long userId)
     {
-        var realms = await DbContext.RealmEntities.Where(e => e.UserId == userId).ToListAsync();
+        var realms = await DbContext.RealmEntities.Where(e => e.UserId == userId)
+            .OrderByDescending(e => e.Created).ToListAsync();
 
         return Mapper.Map<ICollection<RealmResponseDto>>(realms);
     }

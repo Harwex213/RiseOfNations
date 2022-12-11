@@ -3,10 +3,10 @@ import { stores } from "../../../store";
 import { routes } from "../../../common/constants";
 import { Navigate } from "react-router-dom";
 
-const globalState = stores.globalState;
+const userStore = stores.user;
 
 export const OnlyGuestAccess = observer(({ redirect = routes.profile, children }) => {
-    if (globalState.user.isAuthenticated) {
+    if (userStore.user.isAuthenticated) {
         return <Navigate to={redirect} replace={true} />;
     }
 
