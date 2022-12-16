@@ -56,6 +56,7 @@ public static class ServicesConfiguration
         Services.AddScoped<IAuthService, AuthService>();
         Services.AddScoped<IGameInfoService, GameInfoService>();
         Services.AddScoped<IRealmsService, RealmsService>();
+        Services.AddSingleton<IGamesService, GamesService>();
     }
     
     private static void ConfigureInternalServices()

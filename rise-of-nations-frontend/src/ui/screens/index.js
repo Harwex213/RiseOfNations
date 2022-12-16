@@ -1,5 +1,7 @@
 export { default as Main } from "./main/Main";
 export { default as Test } from "./test/Test";
+
+export { GameScreen } from "./game/GameScreen";
 export { GamesScreen } from "./games/GamesScreen";
 export { LoginScreen } from "./login/LoginScreen";
 export { ProfileScreen } from "./profile/ProfileScreen";

@@ -43,9 +43,12 @@ export const RegistrationScreen = () => {
     const formik = useFormik({
         initialValues: form.initialValues,
         validationSchema: form.validationSchema,
-        onSubmit: suspenseServiceError(async (values) => {
-            await authenticationService.register(values);
-        }, enqueueSnackbar),
+        onSubmit: suspenseServiceError(
+            async (values) => {
+                await authenticationService.register(values);
+            },
+            { notify: enqueueSnackbar }
+        ),
     });
 
     return (

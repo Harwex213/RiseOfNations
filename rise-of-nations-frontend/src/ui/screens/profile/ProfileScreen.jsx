@@ -7,7 +7,7 @@ import userAvatarSample from "./user-avatar-sample.png";
 import { FeaturedRealms } from "../../containers";
 import { authenticationService } from "../../../services";
 
-const globalState = stores.globalState;
+const userStore = stores.user;
 
 export const ProfileScreen = observer(() => {
     return (
@@ -37,7 +37,7 @@ export const ProfileScreen = observer(() => {
                     <CardContent>
                         <Stack spacing={2}>
                             <Typography variant="h3" sx={{ textAlign: "center" }}>
-                                {globalState.user.username}
+                                {userStore.user.username}
                             </Typography>
                             <Button variant="outlined">{profile.actions.editProfile}</Button>
                             <Button variant="outlined" color="error" onClick={authenticationService.logout}>

@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-export default class GameInfoStore {
+export default class GlobalGameInfoStore {
     gameVariables;
     modificators;
 
@@ -9,7 +9,7 @@ export default class GameInfoStore {
         this.modificators = [];
 
         makeAutoObservable(this, {
-            describeModificator: false,
+            getModificator: false,
         });
     }
 

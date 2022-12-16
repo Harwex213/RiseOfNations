@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "../../components";
-import { games, validationRequiredMessage } from "../../../common/localization";
-import Button from "@mui/material/Button";
+import { gamesScreen, validationRequiredMessage } from "../../../common/localization";
 import { Box, MenuItem } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import { suspenseServiceError } from "../../../common/utils";
-import { authenticationService } from "../../../services";
+import { gameService, gamesService } from "../../../services";
 import * as yup from "yup";
 import { Select } from "../../components";
+import { useNavigate } from "react-router-dom";
+import { stores } from "../../../store";
+import { routes } from "../../../common/constants";
+import LoadingButton from "@mui/lab/LoadingButton";
+
+const userStore = stores.user;
 
 const form = {
     fields: {
@@ -26,20 +31,35 @@ const form = {
         turnDuration: [1, 3, 5],
     },
     validationSchema: yup.object({
-        name: yup.string().required(validationRequiredMessage(games.fieldLabels.name)),
-        playersAmount: yup.number().required(validationRequiredMessage(games.fieldLabels.playersAmount)),
-        turnDuration: yup.number().required(validationRequiredMessage(games.fieldLabels.turnDuration)),
+        name: yup.string().required(validationRequiredMessage(gamesScreen.fieldLabels.name)),
+        playersAmount: yup
+            .number()
+            .required(validationRequiredMessage(gamesScreen.fieldLabels.playersAmount)),
+        turnDuration: yup.number().required(validationRequiredMessage(gamesScreen.fieldLabels.turnDuration)),
     }),
 };
 
 export const CreateGame = ({ sx }) => {
+    const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
+    const [isFetching, setIsFetching] = useState(false);
     const formik = useFormik({
         initialValues: form.initialValues,
         validationSchema: form.validationSchema,
-        onSubmit: suspenseServiceError(async (values) => {
-            await authenticationService.login(values);
-        }, enqueueSnackbar),
+        onSubmit: suspenseServiceError(
+            async (values) => {
+                if (userStore.user.isAuthenticated === false) {
+                    navigate(routes.login);
+                    return;
+                }
+                setIsFetching(true);
+                await gameService.createGame(values);
+                gamesService.unsubscribeFromGameList();
+                setIsFetching(false);
+                navigate(routes.gamesNested.preparing);
+            },
+            { notify: enqueueSnackbar, onError: () => setIsFetching(false) }
+        ),
     });
 
     return (
@@ -49,14 +69,14 @@ export const CreateGame = ({ sx }) => {
             sx={{ ...sx, display: "flex", flexDirection: "column" }}
         >
             <Input
-                label={games.fieldLabels.name}
+                label={gamesScreen.fieldLabels.name}
                 name={form.fields.name}
                 formik={formik}
                 margin="normal"
                 fullWidth
             />
             <Select
-                label={games.fieldLabels.playersAmount}
+                label={gamesScreen.fieldLabels.playersAmount}
                 name={form.fields.playersAmount}
                 formik={formik}
                 margin="normal"
@@ -64,12 +84,12 @@ export const CreateGame = ({ sx }) => {
             >
                 {form.optionValues.playersAmount.map((value) => (
                     <MenuItem key={value} value={value}>
-                        {games.fieldOptions.playersAmount(value)}
+                        {gamesScreen.fieldOptions.playersAmount(value)}
                     </MenuItem>
                 ))}
             </Select>
             <Select
-                label={games.fieldLabels.turnDuration}
+                label={gamesScreen.fieldLabels.turnDuration}
                 name={form.fields.turnDuration}
                 formik={formik}
                 margin="normal"
@@ -77,13 +97,19 @@ export const CreateGame = ({ sx }) => {
             >
                 {form.optionValues.turnDuration.map((value) => (
                     <MenuItem key={value} value={value}>
-                        {games.fieldOptions.turnDuration(value)}
+                        {gamesScreen.fieldOptions.turnDuration(value)}
                     </MenuItem>
                 ))}
             </Select>
-            <Button type="submit" fullWidth variant="outlined" sx={{ mt: 3, mb: 2 }}>
-                {games.gameList.actions.createGame}
-            </Button>
+            <LoadingButton
+                type="submit"
+                fullWidth
+                variant="outlined"
+                loading={isFetching}
+                sx={{ mt: 3, mb: 2 }}
+            >
+                {gamesScreen.gameList.actions.createGame}
+            </LoadingButton>
         </Box>
     );
 };

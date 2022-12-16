@@ -1,6 +1,7 @@
 import { apiClient, suspenseApiError } from "../../apiClient";
 import { authenticationTransform } from "../../transform/authenticationTransform";
 import { stores } from "../../store";
+import { gameService } from "../game/gameService";
 
 const userStore = stores.user;
 
@@ -24,14 +25,18 @@ export const authenticationService = {
             // ignored
         } finally {
             userStore.clearUser();
+            gameService.leaveGame().catch(() => {});
         }
     },
     describe: suspenseApiError(async () => {
+        userStore.setIsFetchingDescribe(true);
         const { payload: userIdentity } = await apiClient.authenticationClient.describe();
         const user = authenticationTransform.mapUserIdentity(userIdentity);
         userStore.setUser(user);
+        userStore.setIsFetchingDescribe(false);
     }),
     onUnauthorized: () => {
         userStore.clearUser();
+        gameService.leaveGame().catch(() => {});
     },
 };

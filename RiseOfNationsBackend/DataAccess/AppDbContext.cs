@@ -28,7 +28,7 @@ public sealed class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<GameVariableEntity>().HasData(GameVariableEntity.GameVariablesInitial);
 
         modelBuilder.Entity<UserEntity>()

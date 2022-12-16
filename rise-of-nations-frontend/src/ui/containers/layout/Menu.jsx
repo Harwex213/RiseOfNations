@@ -17,10 +17,18 @@ import { routes } from "../../../common/constants";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const userStore = stores.user;
+const gameStore = stores.currentGame;
 
 const PlayerMenu = observer(({ navigate, currentPath }) => (
     <>
-        <MenuItem selected={currentPath.includes(routes.games)} onClick={() => navigate(routes.games)}>
+        <MenuItem
+            selected={currentPath.includes(routes.games)}
+            onClick={() =>
+                gameStore.isInGame
+                    ? navigate(`${routes.games}/${routes.gamesNested.preparing}`)
+                    : navigate(routes.games)
+            }
+        >
             <ListItemIcon>
                 <PlayCircleFilledIcon fontSize="small" />
             </ListItemIcon>

@@ -1,17 +1,25 @@
 import { makeAutoObservable } from "mobx";
 
 export default class UserStore {
+    isFetchingDescribe;
     user;
     userRealms;
 
     constructor() {
+        this.isFetchingDescribe = true;
         this.user = {
             id: null,
             username: "Guest",
             isAuthenticated: false,
         };
         this.userRealms = [];
-        makeAutoObservable(this);
+        makeAutoObservable(this, {
+            getRealm: false,
+        });
+    }
+
+    setIsFetchingDescribe(value) {
+        this.isFetchingDescribe = value;
     }
 
     setRealms(realms) {
@@ -28,5 +36,10 @@ export default class UserStore {
         this.user.id = null;
         this.user.username = "Guest";
         this.user.isAuthenticated = false;
+    }
+
+    getRealm(id) {
+        const index = this.userRealms.findIndex((r) => r.id === id);
+        return index !== -1 ? this.userRealms[index] : null;
     }
 }

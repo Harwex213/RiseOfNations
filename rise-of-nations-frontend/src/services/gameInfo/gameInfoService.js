@@ -2,7 +2,7 @@ import { stores } from "../../store";
 import { apiClient, suspenseApiError } from "../../apiClient";
 import { gameInfoTransform } from "../../transform/gameInfoTransform";
 
-const gameInfoStore = stores.gameInfo;
+const gameInfoStore = stores.globalGameInfo;
 
 export const gameInfoService = {
     getGameInfo: suspenseApiError(async () => {

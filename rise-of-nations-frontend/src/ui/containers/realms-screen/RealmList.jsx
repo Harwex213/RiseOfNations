@@ -17,9 +17,12 @@ export const RealmList = observer(() => {
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
     useLayoutEffect(() => {
-        suspenseServiceError(async () => {
-            await realmsService.getRealms();
-        }, enqueueSnackbar)();
+        suspenseServiceError(
+            async () => {
+                await realmsService.getRealms();
+            },
+            { notify: enqueueSnackbar }
+        )();
     }, [enqueueSnackbar]);
 
     return (

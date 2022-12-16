@@ -1,10 +1,11 @@
 export const routes = {
     index: "/",
     defaultRoute: "/games",
+    game: "/game",
     games: "/games",
     gamesNested: {
         index: "",
-        joinToGame: ":gameId",
+        preparing: "preparing",
     },
     profile: "/profile",
     realms: "/realms",

@@ -3,7 +3,7 @@ using DataTransferObjects.Rpc.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.RpcServices.Interfaces;
-using WebApi.Configuration;
+using WebApi.Constants;
 using WebApi.Extensions;
 
 namespace WebApi.RpcControllers;
@@ -24,5 +24,12 @@ public class RealmsController : Controller
     {
         var user = HttpContext.Session.Get<DescribeUserResponseDto>(SessionConfiguration.UserDataKeyName);
         return await Service.GetUserRealms(user.Id);
+    }
+
+    [HttpGet("{realmId}")]
+    [Authorize]
+    public async Task<RealmResponseDto> GetRealm(long realmId)
+    {
+        return await Service.GetRealm(realmId);
     }
 }

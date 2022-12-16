@@ -1,7 +1,7 @@
 import React from "react";
 import { TextField } from "@mui/material";
 
-export const Input = ({ name, label, formik, ...props }) => {
+export const Input = ({ name, label, formik, disableErrors = false, ...props }) => {
     return (
         <TextField
             id={name}
@@ -9,8 +9,8 @@ export const Input = ({ name, label, formik, ...props }) => {
             label={label}
             value={formik.values[name]}
             onChange={formik.handleChange}
-            error={formik.touched[name] && Boolean(formik.errors[name])}
-            helperText={formik.touched[name] && formik.errors[name]}
+            error={!disableErrors && formik.touched[name] && Boolean(formik.errors[name])}
+            helperText={!disableErrors && formik.touched[name] && formik.errors[name]}
             {...props}
         />
     );

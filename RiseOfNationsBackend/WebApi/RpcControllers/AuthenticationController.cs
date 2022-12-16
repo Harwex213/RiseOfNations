@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Exceptions;
 using Services.RpcServices.Interfaces;
 using WebApi.Authentication;
-using WebApi.Configuration;
+using WebApi.Constants;
 using WebApi.Extensions;
 using WebApi.Filters;
 

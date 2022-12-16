@@ -21,7 +21,7 @@ public class GameInfoService : IGameInfoService
     
     public async Task<GameInfoResponseDto> GetGameInfo()
     {
-        var gameVariables = await DbContext.GameVariableEntities.ToListAsync();
+        var gameVariables = await DbContext.GameVariableEntities.OrderBy(v => v.Id).ToListAsync();
         var modificators = await DbContext.ModificatorEntities.ToListAsync();
 
         return new GameInfoResponseDto

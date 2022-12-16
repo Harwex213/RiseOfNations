@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, Box, Grid, Link } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { useFormik } from "formik";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../../common/localization";
 import { routes } from "../../../common/constants";
@@ -31,12 +31,18 @@ const form = {
 export const LoginScreen = () => {
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
+    const [isFetching, setIsFetching] = useState(false);
     const formik = useFormik({
         initialValues: form.initialValues,
         validationSchema: form.validationSchema,
-        onSubmit: suspenseServiceError(async (values) => {
-            await authenticationService.login(values);
-        }, enqueueSnackbar),
+        onSubmit: suspenseServiceError(
+            async (values) => {
+                setIsFetching(true);
+                await authenticationService.login(values);
+                setIsFetching(false);
+            },
+            { notify: enqueueSnackbar, onError: () => setIsFetching(false) }
+        ),
     });
 
     return (
@@ -77,9 +83,15 @@ export const LoginScreen = () => {
                     fullWidth
                     type="password"
                 />
-                <Button type="submit" fullWidth variant="outlined" sx={{ mt: 3, mb: 2 }}>
+                <LoadingButton
+                    type="submit"
+                    fullWidth
+                    variant="outlined"
+                    loading={isFetching}
+                    sx={{ mt: 3, mb: 2 }}
+                >
                     {login.submitButton}
-                </Button>
+                </LoadingButton>
                 <Grid container>
                     <Grid>
                         <Link

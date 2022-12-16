@@ -7,14 +7,18 @@ import { stores } from "../../../../store";
 import "./Realm.css";
 
 export const Realm = ({ realm, onUpdate, onDelete, ...props }) => {
-    const modificator = stores.gameInfo.getModificator(realm.modificatorId);
+    const modificator = stores.globalGameInfo.getModificator(realm.modificatorId);
+    const flagUrl =
+        realm.flagExtension === null
+            ? staticApiRoutes.defaultRealmImage
+            : `${staticApiRoutes.realmImages}/${realm.flagId + realm.flagExtension}`;
 
     return (
         <Paper {...props} sx={{ padding: 2, ...props.sx }}>
             <Stack direction="row" sx={{ height: "100%" }}>
                 <img
                     style={{ width: "30%", objectFit: "contain" }}
-                    src={`${staticApiRoutes.realmImages}/${realm.flagId + realm.flagExtension}`}
+                    src={flagUrl}
                     alt="Realm's flag sample"
                     loading="lazy"
                     onError={(e) => {

@@ -1,6 +1,6 @@
-export const games = {
+export const gamesScreen = {
     gameList: {
-        pageTitle: "Game rooms",
+        pageTitle: "Current games",
         pageSubtitle: "Choose game room to join in the left side list or create your own:",
         actions: {
             createGame: "Create room",

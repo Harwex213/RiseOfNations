@@ -1,9 +1,13 @@
 using Common.Constants.Configuration;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Services;
 using WebApi.Authentication;
+using WebApi.Constants;
 using WebApi.Middleware;
+using WebApi.Services;
 
 namespace WebApi;
 
@@ -19,11 +23,11 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         AppDbContext.AddToContainer(services, Configuration);
-        
+        AddServices(services);
+        services.AddAutoMapper(typeof(Startup).Assembly);
         ServicesConfiguration.Configure(services);
         
         services.AddDistributedMemoryCache();
-
         services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromDays(1);
@@ -51,6 +55,12 @@ public class Startup
     public void Configure(WebApplication app, IWebHostEnvironment env)
     {
         FileUploaderConfiguration.WebRootPath = env.WebRootPath;
+        JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+        
+        UpdateDatabaseMigrations(app.Services);
         
         if (app.Environment.IsDevelopment())
         {
@@ -73,17 +83,12 @@ public class Startup
         }
 
         app.UseHttpsRedirection();
-        app.UseStaticFiles("/static");
+        app.UseStaticFiles(RoutesConfiguration.StaticFilesRoute);
         app.UseSession();
         app.UseMiddleware<ErrorHandlerMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
-    }
-    
-    public void OnBuild(WebApplication app)
-    {
-        UpdateDatabaseMigrations(app.Services);
     }
 
     private void UpdateDatabaseMigrations(IServiceProvider services)
@@ -91,5 +96,11 @@ public class Startup
         using var scope = services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();    
         dbContext.Database.Migrate();
+    }
+
+    private void AddServices(IServiceCollection services)
+    {
+        services.AddSingleton<IGameListSseService, GameListSseService>();
+        services.AddSingleton<IGameSseService, GameSseService>();
     }
 }
