@@ -7,3 +7,8 @@ export { RealmForm } from "./realms-screen/realm-form/RealmForm";
 
 export { Game } from "./games-screen/Game";
 export { PlayerAvatar } from "./games-screen/PlayerAvatar";
+
+export { CanvasBuilding } from "./canvas/CanvasBuilding";
+export { CanvasUnit } from "./canvas/CanvasUnit";
+export { CanvasCreationBuilding } from "./canvas/CanvasCreationBuilding";
+export { CanvasCreationUnit } from "./canvas/CanvasCreationUnit";

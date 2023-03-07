@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using Common.Constants;
 using Common.Constants.ErrorMessages;
+using DataTransferObjects.Rest.GameParty;
+using DataTransferObjects.Rest.Realm;
 using DataTransferObjects.Rpc.Authentication;
 using DataTransferObjects.Rpc.Games.RequestDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Services.Exceptions;
+using Services.RestServices.Interfaces;
 using Services.RpcServices.Interfaces;
 using WebApi.Constants;
 using WebApi.Dtos.Games;
@@ -19,13 +22,14 @@ namespace WebApi.RpcControllers;
 [Route("api/[controller]")]
 public class GameController : Controller
 {
-    public GameController(IGamesService gamesService, IGameSseService gameSseService, IGameListSseService gameListSseService, IMapper mapper, IRealmsService realmsService)
+    public GameController(IGamesService gamesService, IGameSseService gameSseService, IGameListSseService gameListSseService, IMapper mapper, IRealmsService realmsService, IRestService<CreateGamePartyRequestDto, UpdateGamePartyRequestDto, GamePartyResponseDto> gamePartyService)
     {
         GamesService = gamesService;
         GameSseService = gameSseService;
         GameListSseService = gameListSseService;
         Mapper = mapper;
         RealmsService = realmsService;
+        GamePartyService = gamePartyService;
     }
 
     public IGamesService GamesService { get; set; }
@@ -33,6 +37,7 @@ public class GameController : Controller
     public IGameSseService GameSseService { get; set; }
     public IGameListSseService GameListSseService { get; set; }
     public IMapper Mapper { get; set; }
+    public IRestService<CreateGamePartyRequestDto, UpdateGamePartyRequestDto, GamePartyResponseDto> GamePartyService { get; set; }
 
     private async Task OnClientDisconnected(Guid gameId, long userId)
     {
@@ -288,6 +293,68 @@ public class GameController : Controller
         {
             Name = GameEvents.ChatMessage,
             Data = response,
+        });
+    }
+    
+    [HttpPost("endTurn/{gameId}")]
+    [Authorize]
+    [ModelStateValidation]
+    public async Task EndTurn(Guid gameId, [FromBody] EndTurnRequest endTurnRequest)
+    {
+        var user = HttpContext.Session.Get<DescribeUserResponseDto>(SessionConfiguration.UserDataKeyName);
+        var game = GamesService.GetGame(gameId);
+        var player = game.Players.FirstOrDefault(p => p.Id == user.Id);
+        if (player == null)
+        {
+            throw new BadRequestException(GamesErrorMessages.PlayerNotFound);
+        }
+
+        await GameSseService.SendEventAsync(game.Id, new ServerSentEvent
+        {
+            Name = GameEvents.NewTurn,
+            Data = new EndTurnResponse
+            {
+                Actions = endTurnRequest.Actions,
+                UserId = user.Id
+            },
+        });
+    }
+    
+    [HttpPost("playerWin/{gameId}")]
+    [Authorize]
+    [ModelStateValidation]
+    public async Task PlayerWin(Guid gameId, [FromBody] PlayerWinRequest playerWinRequest)
+    {
+        var user = HttpContext.Session.Get<DescribeUserResponseDto>(SessionConfiguration.UserDataKeyName);
+        var game = GamesService.FinishGame(new FinishGameDto
+        {
+            GameId = gameId,
+            WinnerPlayerId = user.Id,
+            WinnerPlayerIndex = playerWinRequest.WinnerPlayerIndex
+        });
+
+        await GamePartyService.Add(new CreateGamePartyRequestDto
+        {
+            Name = game.Name,
+            TurnDuration = game.TurnDuration,
+            TurnsCompleted = playerWinRequest.TurnsCompleted,
+            WinnerUserId = user.Id,
+        });
+
+        await GameSseService.SendEventAsync(game.Id, new ServerSentEvent
+        {
+            Name = GameEvents.NewTurn,
+            Data = new EndTurnResponse
+            {
+                Actions = playerWinRequest.Actions,
+                UserId = user.Id
+            },
+        });
+        
+        await GameSseService.SendEventAsync(game.Id, new ServerSentEvent
+        {
+            Name = GameEvents.GameData,
+            Data = game,
         });
     }
 }

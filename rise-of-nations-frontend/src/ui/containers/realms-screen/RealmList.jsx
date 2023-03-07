@@ -25,6 +25,14 @@ export const RealmList = observer(() => {
         )();
     }, [enqueueSnackbar]);
 
+    const handleRealmDelete = suspenseServiceError(
+        async (realm) => {
+            await realmsService.deleteRealm({ id: realm.id });
+            await realmsService.getRealms();
+        },
+        { notify: enqueueSnackbar }
+    );
+
     return (
         <Stack>
             <Typography variant="h4">{realms.pageTitles.list}</Typography>
@@ -44,7 +52,7 @@ export const RealmList = observer(() => {
                             realm={realm}
                             elevation={1}
                             sx={{ height: 300 }}
-                            onDelete={null}
+                            onDelete={handleRealmDelete}
                             onUpdate={(id) => navigate(String(id))}
                         />
                     </Grid2>

@@ -19,6 +19,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<RealmEntity> RealmEntities { get; set; }
     public DbSet<ModificatorEntity> ModificatorEntities { get; set; }
     public DbSet<GameVariableEntity> GameVariableEntities { get; set; }
+    public DbSet<GamePartyEntity> GamePartyEntities { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -29,6 +30,19 @@ public sealed class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<UserEntity>().HasData(new List<UserEntity>
+        {
+            new()
+            {
+                Id = 1,
+                Username = "Harwex",
+                Password = "$2a$11$lMSwQjxeSha8HjlCG0APZ.46R12BlZbFyzQMZjD6gPjhPJtMdzRmS",
+                UserRole = UserRoles.Admin,
+                IsDeleted = false,
+                Created = GameVariableEntity.GameVariablesDateTime,
+                Updated = GameVariableEntity.GameVariablesDateTime
+            }
+        });
         modelBuilder.Entity<GameVariableEntity>().HasData(GameVariableEntity.GameVariablesInitial);
 
         modelBuilder.Entity<UserEntity>()
@@ -55,6 +69,8 @@ public sealed class AppDbContext : DbContext
 
     public static void AddToContainer(IServiceCollection services, IConfiguration configuration)
     {
+        Console.WriteLine("Using connection string: " + configuration.GetConnectionString("DefaultConnection"));
+        
         services.AddDbContext<AppDbContext>(options =>
         {
             options

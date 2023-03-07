@@ -1,20 +1,27 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /app
-EXPOSE 5000
-EXPOSE 443
+COPY *.sln .
+COPY WebApi/*.csproj ./WebApi/
+COPY Services/*.csproj ./Services/
+COPY DataTransferObjects/*.csproj ./DataTransferObjects/
+COPY DataAccess/*.csproj ./DataAccess/
+COPY Common/*.csproj ./Common/
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
-COPY ["web-api/web-api.csproj", "web-api/"]
-RUN dotnet restore "web-api/web-api.csproj"
-COPY . .
-WORKDIR "/src/web-api"
-RUN dotnet build "web-api.csproj" -c Release -o /app/build
+RUN dotnet restore
 
-FROM build AS publish
-RUN dotnet publish "web-api.csproj" -c Release -o /app/publish
+COPY WebApi/. ./WebApi/
+COPY Services/. ./Services/
+COPY DataTransferObjects/. ./DataTransferObjects/
+COPY DataAccess/. ./DataAccess/
+COPY Common/. ./Common/
 
-FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "web-api.dll"]
+
+RUN dotnet dev-certs https
+RUN dotnet publish -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/out .
+COPY --from=build /root/.dotnet/corefx/cryptography/x509stores/my/* /root/.dotnet/corefx/cryptography/x509stores/my/
+ENTRYPOINT ["dotnet", "WebApi.dll", "--urls", "http://*:5000"]

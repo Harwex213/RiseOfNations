@@ -8,6 +8,7 @@ import { UserList, UserCreate, UserEdit } from "./users";
 import { GameVariableList, GameVariableEdit } from "./gameVariables";
 import { ModificatorList, ModificatorCreate, ModificatorEdit } from "./modificators";
 import { RealmList, RealmCreate, RealmEdit } from "./realms";
+import { GamePartyList } from "./gameParties";
 
 const App = () => (
     <Admin layout={AppLayout} dataProvider={dataProvider} authProvider={authProvider} requireAuth>
@@ -20,6 +21,7 @@ const App = () => (
             edit={ModificatorEdit}
         />
         <Resource name={resources.gameVariables} list={GameVariableList} edit={GameVariableEdit} />
+        <Resource name={resources.gameParties} list={GamePartyList} />
     </Admin>
 );
 

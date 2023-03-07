@@ -12,6 +12,7 @@ public class UserEntity : Entity
     public UserEntity()
     {
         Realms  = new HashSet<RealmEntity>();
+        GameParties  = new HashSet<GamePartyEntity>();
     }
     
     [MaxLength(UserConstraints.UsernameMaxLength)]
@@ -27,6 +28,7 @@ public class UserEntity : Entity
     public string UserRole { get; set; }
     
     public virtual ICollection<RealmEntity> Realms { get; set; }
+    public virtual ICollection<GamePartyEntity> GameParties { get; set; }
     
     public override void CascadeDelete()
     {
@@ -34,6 +36,11 @@ public class UserEntity : Entity
         {
             realmEntity.Delete();
             realmEntity.CascadeDelete();
+        }
+        foreach (var gamePartyEntity in GameParties)
+        {
+            gamePartyEntity.Delete();
+            gamePartyEntity.CascadeDelete();
         }
     }
 }

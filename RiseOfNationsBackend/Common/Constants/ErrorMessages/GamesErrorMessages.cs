@@ -13,4 +13,5 @@ public class GamesErrorMessages
     public const string NotEnoughPlayers = "Not enough players for start game";
     public const string PlayersNotReady = "Not every player ready for start game";
     public const string CannotStart = "You not allowed to start this game";
+    public const string GameIsNotStarted = "Game is not started";
 }

@@ -46,10 +46,10 @@ export const Realm = ({ realm, onUpdate, onDelete, ...props }) => {
                     </Grid2>
                     <Grid2 item xs={12} sx={{ marginTop: "auto" }}>
                         <Stack direction="row" spacing={2}>
-                            <Button variant="contained" onClick={() => onUpdate(1)}>
+                            <Button variant="contained" onClick={() => onUpdate(realm.id)}>
                                 {realms.realmListActions.updateRealm}
                             </Button>
-                            <Button variant="contained" color="error" onClick={onDelete}>
+                            <Button variant="contained" color="error" onClick={() => onDelete(realm)}>
                                 {realms.realmListActions.deleteRealm}
                             </Button>
                         </Stack>

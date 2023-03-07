@@ -11,6 +11,9 @@ export const apiRoutes = {
     realms: {
         getUserRealms: "realms",
         getRealm: "realms",
+        createRealm: "realms/create",
+        updateRealm: "realms/update",
+        deleteRealm: "realms/delete",
     },
     game: {
         selectRealm: "game/select-realm",
@@ -19,5 +22,7 @@ export const apiRoutes = {
         kick: "game/kick",
         start: "game/start",
         chat: "game/chat",
+        endTurn: "game/endTurn",
+        playerWin: "game/playerWin",
     },
 };

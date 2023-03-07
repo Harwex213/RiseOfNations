@@ -3,6 +3,7 @@ export const resources = {
     realms: "Realms",
     modificators: "Modificators",
     gameVariables: "GameVariables",
+    gameParties: "GameParties",
 };
 
 export const routes = {
@@ -10,6 +11,7 @@ export const routes = {
     toRealms: "/" + resources.realms,
     toModificators: "/" + resources.modificators,
     toGameVariables: "/" + resources.gameVariables,
+    toGameParties: "/" + resources.gameParties,
 };
 
 export const apiRoutes = {

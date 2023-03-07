@@ -16,4 +16,5 @@ public interface IGamesService
     public GameResponseDto KickPlayer(KickPlayerDto kickPlayerDto);
     public GameResponseDto SetPlayerIsReady(PlayerIsReadyDto playerIsReadyDto, bool value);
     public GameResponseDto StartGame(StartGameDto startGameDto);
+    public GameResponseDto FinishGame(FinishGameDto finishGameDto);
 }

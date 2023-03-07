@@ -33,8 +33,9 @@ public class Startup
             options.IdleTimeout = TimeSpan.FromDays(1);
 
             options.Cookie.IsEssential = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            options.Cookie.SameSite = SameSiteMode.None;
+            options.Cookie.HttpOnly = false;
+            // options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+            // options.Cookie.SameSite = SameSiteMode.None;
         });
         
         services.AddOptions<SessionAuthenticationSchemeOptions>();
@@ -43,7 +44,8 @@ public class Startup
                 SessionAuthenticationSchemeOptions.SchemeName, null
             );
 
-        services.AddControllers();
+        services.AddControllers()
+            .AddNewtonsoftJson();
         
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(o =>
@@ -54,6 +56,8 @@ public class Startup
 
     public void Configure(WebApplication app, IWebHostEnvironment env)
     {
+        Console.WriteLine(Configuration["ConnectionStrings.DefaultConnection"]);
+        
         FileUploaderConfiguration.WebRootPath = env.WebRootPath;
         JsonConvert.DefaultSettings = () => new JsonSerializerSettings
         {
@@ -62,27 +66,39 @@ public class Startup
         
         UpdateDatabaseMigrations(app.Services);
         
-        if (app.Environment.IsDevelopment())
+        // if (app.Environment.IsDevelopment())
+        // {
+        //     app.UseSwagger();
+        //     app.UseSwaggerUI();
+        //
+        //     app.UseCors(b =>
+        //     {
+        //         b.SetIsOriginAllowed(_ => true);
+        //         b.AllowAnyHeader();
+        //         b.AllowAnyMethod();
+        //         b.AllowCredentials();
+        //         b.WithExposedHeaders("Content-Range");
+        //     });
+        // }
+        //
+        // if (app.Environment.IsProduction())
+        // {
+        //     app.UseHsts();
+        // }
+        
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
+        app.UseCors(b =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            b.SetIsOriginAllowed(_ => true);
+            b.AllowAnyHeader();
+            b.AllowAnyMethod();
+            b.AllowCredentials();
+            b.WithExposedHeaders("Content-Range");
+        });
 
-            app.UseCors(b =>
-            {
-                b.SetIsOriginAllowed(_ => true);
-                b.AllowAnyHeader();
-                b.AllowAnyMethod();
-                b.AllowCredentials();
-                b.WithExposedHeaders("Content-Range");
-            });
-        }
-
-        if (app.Environment.IsProduction())
-        {
-            app.UseHsts();
-        }
-
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
         app.UseStaticFiles(RoutesConfiguration.StaticFilesRoute);
         app.UseSession();
         app.UseMiddleware<ErrorHandlerMiddleware>();

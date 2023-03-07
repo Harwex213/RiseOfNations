@@ -25,7 +25,7 @@ public class GameVariableEntity : Entity
         }
     }
 
-    private static readonly DateTime GameVariablesDateTime = new DateTime(2022, 11, 25).ToUniversalTime();
+    public static readonly DateTime GameVariablesDateTime = new DateTime(2022, 11, 25).ToUniversalTime();
     public static readonly IEnumerable<GameVariableEntity> GameVariablesInitial = new List<GameVariableEntity>
     {
         new()
@@ -113,6 +113,46 @@ public class GameVariableEntity : Entity
             Id = (long)GameVariables.TowerCostLevelTwo,
             Name = GameVariables.TowerCostLevelTwo.ToString(),
             DefaultValue = GameVariablesDefaults.TowerCostLevelTwo,
+            Created = GameVariablesDateTime,
+            Updated = GameVariablesDateTime
+        },
+        new()
+        {
+            Id = (long)GameVariables.TowerOutcomeLevelOne,
+            Name = GameVariables.TowerOutcomeLevelOne.ToString(),
+            DefaultValue = GameVariablesDefaults.TowerOutcomeLevelOne,
+            Created = GameVariablesDateTime,
+            Updated = GameVariablesDateTime
+        },
+        new()
+        {
+            Id = (long)GameVariables.TowerOutcomeLevelTwo,
+            Name = GameVariables.TowerOutcomeLevelTwo.ToString(),
+            DefaultValue = GameVariablesDefaults.TowerOutcomeLevelTwo,
+            Created = GameVariablesDateTime,
+            Updated = GameVariablesDateTime
+        },
+        new()
+        {
+            Id = (long)GameVariables.UnitOutcomeLevelOne,
+            Name = GameVariables.UnitOutcomeLevelOne.ToString(),
+            DefaultValue = GameVariablesDefaults.UnitOutcomeLevelOne,
+            Created = GameVariablesDateTime,
+            Updated = GameVariablesDateTime
+        },
+        new()
+        {
+            Id = (long)GameVariables.UnitOutcomeLevelTwo,
+            Name = GameVariables.UnitOutcomeLevelTwo.ToString(),
+            DefaultValue = GameVariablesDefaults.UnitOutcomeLevelTwo,
+            Created = GameVariablesDateTime,
+            Updated = GameVariablesDateTime
+        },
+        new()
+        {
+            Id = (long)GameVariables.UnitOutcomeLevelThree,
+            Name = GameVariables.UnitOutcomeLevelThree.ToString(),
+            DefaultValue = GameVariablesDefaults.UnitOutcomeLevelThree,
             Created = GameVariablesDateTime,
             Updated = GameVariablesDateTime
         }

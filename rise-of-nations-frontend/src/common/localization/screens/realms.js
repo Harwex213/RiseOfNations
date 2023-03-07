@@ -18,7 +18,7 @@ export const realms = {
         description: "Realm description",
         modificatorId: "Realm modificator",
         modificatorIdDefault: "Not selected",
-        flagImage: "Realm's flag",
+        flagImage: "Upload realm's flag",
     },
     validationSchema: {
         name: {

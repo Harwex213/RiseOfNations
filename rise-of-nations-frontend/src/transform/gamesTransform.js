@@ -6,6 +6,7 @@ export const gamesTransform = {
         playersAmount: game.playersAmount,
         turnDuration: game.turnDuration,
         playerOwnerId: game.playerOwnerId,
+        playerWinnerIndex: game.playerWinnerIndex,
         status: game.status,
         players: game.players.map((player) => ({
             id: player.id,

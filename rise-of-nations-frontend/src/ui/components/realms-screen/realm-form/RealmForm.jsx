@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { Alert, Box, MenuItem, Snackbar, TextField } from "@mui/material";
+import { Box, Chip, MenuItem, Stack, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { realms } from "../../../../common/localization";
-import { ui } from "../../../../common/constants";
 import { Input, Select } from "../../index";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { useSnackbar } from "notistack";
+import { fileToBase64, suspenseServiceError } from "../../../../common/utils";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { stores } from "../../../../store";
+import { useNavigate } from "react-router-dom";
+
+const globalGameInfo = stores.globalGameInfo;
 
 const form = {
     fields: {
@@ -14,6 +20,7 @@ const form = {
         name: "name",
         description: "description",
         modificatorId: "modificatorId",
+        flag: "flag",
     },
     constraints: {
         description: {
@@ -22,40 +29,35 @@ const form = {
     },
     validationSchema: yup.object({
         name: yup.string().required(realms.validationSchema.name.required),
-        description: yup.string().required(realms.validationSchema.description.required),
+        description: yup.string(),
         modificatorId: yup.number().nullable().required(realms.validationSchema.modificatorId.required),
     }),
 };
 
 export const RealmForm = ({ isUpdate, initialValues, onSubmit, ...props }) => {
-    const [notificationState, setNotificationState] = useState({
-        isOpen: false,
-        message: "",
-    });
+    const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
+    const [isFetching, setIsFetching] = useState(false);
+    const [isFileUploaded, setIsFileUploaded] = useState(false);
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: form.validationSchema,
-        onSubmit: async (values) => {
-            try {
+        onSubmit: suspenseServiceError(
+            async (values) => {
+                setIsFetching(true);
+                if (values.flag) {
+                    values.flagFileName = values.flag.name;
+                    const result = await fileToBase64(values.flag);
+                    values.flagBase64 = result.split("base64,")[1];
+                }
+                delete values.flag;
                 await onSubmit(values);
-            } catch (e) {
-                setNotificationState({
-                    isOpen: true,
-                    message: e.message,
-                });
-            }
-        },
+                setIsFetching(false);
+                navigate("..");
+            },
+            { notify: enqueueSnackbar, onError: () => setIsFetching(false) }
+        ),
     });
-    const handleNotificationClose = (event, reason) => {
-        if (reason === "clickaway") {
-            return;
-        }
-
-        setNotificationState({
-            isOpen: false,
-            message: notificationState.message,
-        });
-    };
 
     return (
         <Box
@@ -66,18 +68,7 @@ export const RealmForm = ({ isUpdate, initialValues, onSubmit, ...props }) => {
             gap={2}
             {...props}
         >
-            <Box gridColumn="span 3">
-                <Button
-                    component="label"
-                    variant="outlined"
-                    startIcon={<UploadFileIcon />}
-                    sx={{ width: "100%", height: 330 }}
-                >
-                    {realms.fields.flagImage}
-                    <input type="file" accept=".csv" hidden onChange={null} />
-                </Button>
-            </Box>
-            <Box gridColumn="span 9">
+            <Box gridColumn="span 12">
                 {isUpdate && (
                     <TextField sx={{ display: "none" }} name={form.fields.id} value={formik.values.id} />
                 )}
@@ -107,26 +98,34 @@ export const RealmForm = ({ isUpdate, initialValues, onSubmit, ...props }) => {
                     fullWidth
                 >
                     <MenuItem value={""}>{realms.fields.modificatorIdDefault}</MenuItem>
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    {globalGameInfo.modificators.map((modificator) => (
+                        <MenuItem key={modificator.id} value={modificator.id}>
+                            {modificator.name}. {modificator.description}
+                        </MenuItem>
+                    ))}
                 </Select>
+                <Stack spacing={2} direction="row" sx={{ mt: 2, mb: 1, alignItems: "center" }}>
+                    <Button component="label" variant="outlined" startIcon={<UploadFileIcon />}>
+                        {realms.fields.flagImage}
+                        <input
+                            type="file"
+                            accept=".png,.jpg,.jpeg,.webp"
+                            hidden
+                            onChange={(event) => {
+                                formik.setFieldValue("flag", event.currentTarget.files[0]);
+                                setIsFileUploaded(true);
+                            }}
+                        />
+                    </Button>
+                    {isFileUploaded && <Chip label="Uploaded" color="success" />}
+                </Stack>
             </Box>
+            {/*<Box gridColumn="span 3"></Box>*/}
             <Box gridColumn="span 12" display="flex">
-                <Button type="submit" variant="contained" sx={{ mr: "auto" }}>
+                <LoadingButton type="submit" variant="contained" loading={isFetching} sx={{ mr: "auto" }}>
                     {isUpdate ? realms.realmFormActions.updateRealm : realms.realmFormActions.createRealm}
-                </Button>
+                </LoadingButton>
             </Box>
-            <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                open={notificationState.isOpen}
-                autoHideDuration={ui.errorNotificationTimeLife}
-                onClose={handleNotificationClose}
-            >
-                <Alert onClose={handleNotificationClose} severity="error" sx={{ width: "100%" }}>
-                    {notificationState.message}
-                </Alert>
-            </Snackbar>
         </Box>
     );
 };

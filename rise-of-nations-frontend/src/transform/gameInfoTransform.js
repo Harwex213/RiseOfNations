@@ -1,6 +1,14 @@
 export const gameInfoTransform = {
-    mapFromApi: (gameInfo) => ({
-        gameVariables: gameInfo.gameVariables.map((gameVariable) => gameVariable.defaultValue),
-        modificators: gameInfo.modificators,
-    }),
+    mapFromApi: (gameInfo) => {
+        const gameVariables = [];
+
+        for (const gameVariable of gameInfo.gameVariables) {
+            gameVariables[gameVariable.id] = gameVariable.defaultValue;
+        }
+
+        return {
+            gameVariables,
+            modificators: gameInfo.modificators,
+        };
+    },
 };

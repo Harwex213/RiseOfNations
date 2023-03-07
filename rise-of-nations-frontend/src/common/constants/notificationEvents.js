@@ -8,5 +8,6 @@ export const notificationEvents = {
     game: {
         onGameData: "GameData",
         onChatMessage: "ChatMessage",
+        onNewTurn: "NewTurn",
     },
 };

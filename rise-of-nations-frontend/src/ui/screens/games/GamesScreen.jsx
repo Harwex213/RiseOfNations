@@ -8,7 +8,7 @@ import { InGamePreparingAccess } from "./InGamePreparingAccess";
 
 export const GamesScreen = () => {
     return (
-        <Box sx={{ width: "100%", height: "100%", overflowY: "hidden", pl: 2 }}>
+        <Box sx={{ width: "100%", height: "100%", overflowY: "hidden", p: 2, pb: 0 }}>
             <Routes>
                 <Route
                     path={routes.gamesNested.index}

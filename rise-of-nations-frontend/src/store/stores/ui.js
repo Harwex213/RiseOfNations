@@ -3,6 +3,7 @@ import { makeAutoObservable } from "mobx";
 export default class UiStore {
     fetchCounter;
     notifyUi;
+    gameTimer = 0;
 
     constructor() {
         this.fetchCounter = 0;
@@ -39,5 +40,9 @@ export default class UiStore {
         if (this.notifyUi !== null) {
             this.notifyUi(message, { variant: "success" });
         }
+    }
+
+    setGameTimer(gameTimer) {
+        this.gameTimer = gameTimer;
     }
 }

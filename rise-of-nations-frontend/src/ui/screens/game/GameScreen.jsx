@@ -1,10 +1,10 @@
-import React, { useLayoutEffect } from "react";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import { GameSidebar, GameWindow } from "../../containers";
 import { gameService } from "../../../services";
 
 export const GameScreen = () => {
-    useLayoutEffect(() => {
+    useEffect(() => {
         gameService.initializeGame();
     }, []);
 

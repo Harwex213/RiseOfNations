@@ -1,23 +1,34 @@
 services:
-  client:
+  admin-client:
+    container_name: rise-of-nations-admin-client
+    build: ./admin-frontend
+    ports:
+      - 3000:80
+    depends_on:
+      - backend
+
+  game-client:
+    container_name: rise-of-nations-game-client
     build: ./rise-of-nations-frontend
     ports:
-      - 5000:80
-    container_name: annotation-client
-    restart: always
+      - 3001:80
     depends_on:
-      - server
+      - backend
+  
   backend:
+    container_name: rise-of-nations-backend
     build: ./RiseOfNationsBackend
     ports:
       - "5000:5000"
     restart: always
     depends_on:
-      - database
+        - database
+
   database:
+    container_name: rise-of-nations-database
     image: postgres
     environment:
-      POSTGRES_DB: "RiseOfNations_Database"
+      POSTGRES_DB: "rise_of_nations"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
       PGDATA: "/var/lib/postgresql/data/pgdata"

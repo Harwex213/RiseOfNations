@@ -9,6 +9,7 @@ public class GameResponseDto
     public short PlayersAmount { get; set; }
     public short TurnDuration { get; set; }
     public long PlayerOwnerId { get; set; }
+    public long PlayerWinnerIndex { get; set; }
     public GameStatus Status { get; set; }
     public List<PlayerResponseDto> Players { get; set; } = new();
 }

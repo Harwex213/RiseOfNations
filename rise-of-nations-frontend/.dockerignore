@@ -1,0 +1,7 @@
+node_modules
+.idea
+.vscode
+.vs
+
+.eslintrc.json
+.prettierrc.json

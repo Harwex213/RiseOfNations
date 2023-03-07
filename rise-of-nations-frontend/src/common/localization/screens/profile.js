@@ -5,6 +5,6 @@ export const profile = {
         logout: "Sign out",
     },
     profileDescribe: {
-        featuredRealms: "Featured Realms",
+        personalInfo: "Personal information",
     },
 };

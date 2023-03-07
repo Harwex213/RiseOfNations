@@ -19,4 +19,14 @@ export const gameClient = {
             json: values,
         });
     },
+    endTurn: async ({ gameId, values }) => {
+        return api.post(`${apiRoutes.game.endTurn}/${gameId}`, {
+            json: values,
+        });
+    },
+    sendPlayerWin: async ({ gameId, values }) => {
+        return api.post(`${apiRoutes.game.playerWin}/${gameId}`, {
+            json: values,
+        });
+    },
 };

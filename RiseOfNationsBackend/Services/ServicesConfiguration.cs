@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using DataAccess.Entities;
+using DataTransferObjects.Rest.GameParty;
 using DataTransferObjects.Rest.GameVariable;
 using DataTransferObjects.Rest.Modificator;
 using DataTransferObjects.Rest.Realm;
@@ -41,6 +42,7 @@ public static class ServicesConfiguration
         Services.AddScoped<IEntityFilterService<RealmEntity>, RealmFilterService>();
         Services.AddScoped<IEntityFilterService<ModificatorEntity>, ModificatorFilterService>();
         Services.AddScoped<IEntityFilterService<GameVariableEntity>, GameVariableFilterService>();
+        Services.AddScoped<IEntityFilterService<GamePartyEntity>, GamePartyFilterService>();
     }
     
     private static void ConfigureRestServices()
@@ -49,6 +51,7 @@ public static class ServicesConfiguration
         Services.AddScoped<IRestService<CreateRealmRequestDto, UpdateRealmRequestDto, RealmResponseDto>, RealmService>();
         Services.AddScoped<IRestService<CreateModificatorRequestDto, UpdateModificatorRequestDto, ModificatorResponseDto>, ModificatorService>();
         Services.AddScoped<IRestService<CreateGameVariableRequestDto, UpdateGameVariableRequestDto, GameVariableResponseDto>, GameVariableService>();
+        Services.AddScoped<IRestService<CreateGamePartyRequestDto, UpdateGamePartyRequestDto, GamePartyResponseDto>, GamePartyService>();
     }
 
     private static void ConfigureRpcServices()

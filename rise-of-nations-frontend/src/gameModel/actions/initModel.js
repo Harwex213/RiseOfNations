@@ -19,17 +19,30 @@ const setCountriesGameVarsAndColor = (countries) => {
     }
 };
 
+const getTilesArray = (tilesMatrix) => {
+    const tiles = [];
+    for (let i = 0; i < tilesMatrix.length; i++) {
+        for (let j = 0; j < tilesMatrix[i].length; j++) {
+            if (tilesMatrix[i][j] !== null) {
+                tiles.push(tilesMatrix[i][j]);
+            }
+        }
+    }
+    return tiles;
+};
+
 export const initModel = () => {
     const startTime = performance.now();
 
     const gameInfo = stores.currentGame.info;
-    const [tiles, countries] = generateMap({
+    const [tilesMatrix, countries] = generateMap({
         seed: gameInfo.id,
         playersAmount: gameInfo.players.length,
         mapSize: "small",
     });
     setCountriesGameVarsAndColor(countries);
-    const model = new Model(tiles, countries);
+    const tilesArray = getTilesArray(tilesMatrix);
+    const model = new Model(tilesMatrix, tilesArray, countries);
     stores.currentGame.setModel(model);
 
     const endTime = performance.now();

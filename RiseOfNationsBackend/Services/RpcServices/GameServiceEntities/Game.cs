@@ -9,6 +9,7 @@ public class Game
     public short PlayersAmount { get; set; }
     public short TurnDuration { get; set; }
     public long PlayerOwnerId { get; set; }
+    public long PlayerWinnerIndex { get; set; }
     public DateTime Created { get; set; } = DateTime.UtcNow;
     public GameStatus Status { get; set; }
     public List<Player> Players { get; set; } = new();

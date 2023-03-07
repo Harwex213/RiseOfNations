@@ -1,15 +1,28 @@
-const gameVariables = {
-    tileIncome: 1,
-    farmIncome: 2,
-    farmCostInitial: 3,
-    farmCostIncreasing: 4,
-    unitMoveOnFriendTiles: 5,
-    unitMoveOnEnemyTiles: 6,
-    unitCostLevelOne: 7,
-    unitCostLevelTwo: 8,
-    unitCostLevelThree: 9,
-    towerCostLevelOne: 10,
-    towerCostLevelTwo: 11,
+let eVariableInitialIndex = 1;
+const gameVariableTypes = {
+    tileIncome: eVariableInitialIndex++,
+    farmIncome: eVariableInitialIndex++,
+    farmCostInitial: eVariableInitialIndex++,
+    farmCostIncreasing: eVariableInitialIndex++,
+    unitMoveOnFriendTiles: eVariableInitialIndex++,
+    unitMoveOnEnemyTiles: eVariableInitialIndex++,
+    unitCostLevelOne: eVariableInitialIndex++,
+    unitCostLevelTwo: eVariableInitialIndex++,
+    unitCostLevelThree: eVariableInitialIndex++,
+    towerCostLevelOne: eVariableInitialIndex++,
+    towerCostLevelTwo: eVariableInitialIndex++,
+    towerOutcomeLevelOne: eVariableInitialIndex++,
+    towerOutcomeLevelTwo: eVariableInitialIndex++,
+    unitOutcomeLevelOne: eVariableInitialIndex++,
+    unitOutcomeLevelTwo: eVariableInitialIndex++,
+    unitOutcomeLevelThree: eVariableInitialIndex++,
+};
+
+const actions = {
+    createUnit: "createUnit",
+    createBuilding: "createBuilding",
+    moveUnit: "moveUnit",
+    countryDestroyed: "countryDestroyed",
 };
 
 const statuses = {
@@ -54,7 +67,8 @@ const generationMapConfig = {
 };
 
 export const gameConstants = {
-    gameVariables,
+    gameVariableTypes,
+    actions,
     statuses,
     unitTypes,
     buildingTypes,

@@ -236,4 +236,29 @@ public class GamesService : IGamesService
         
         return Mapper.Map<GameResponseDto>(game);
     }
+
+    public GameResponseDto FinishGame(FinishGameDto finishGameDto)
+    {
+        if (Games.TryGetValue(finishGameDto.GameId, out var game) == false)
+        {
+            throw new NotFoundException(GamesErrorMessages.GameNotFound);
+        }
+
+        lock (game)
+        {
+            if (game.Status != GameStatus.Started)
+            {
+                throw new BadRequestException(GamesErrorMessages.GameIsNotStarted);
+            }
+            if (game.Players.Exists(p => p.Id == finishGameDto.WinnerPlayerId) == false)
+            {
+                throw new NotFoundException(GamesErrorMessages.PlayerNotFound);
+            }
+
+            game.Status = GameStatus.Finished;
+            game.PlayerWinnerIndex = finishGameDto.WinnerPlayerIndex;
+        }
+        
+        return Mapper.Map<GameResponseDto>(game);
+    }
 }

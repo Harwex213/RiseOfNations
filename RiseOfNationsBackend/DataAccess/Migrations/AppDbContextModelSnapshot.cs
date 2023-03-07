@@ -25,6 +25,43 @@ namespace DataAccess.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("DataAccess.Entities.GamePartyEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<short>("TurnDuration")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("TurnsCompleted")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("WinnerUserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WinnerUserId");
+
+                    b.ToTable("GamePartyEntities");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.GameVariableEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -51,7 +88,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GameVariableEntities", (string)null);
+                    b.ToTable("GameVariableEntities");
 
                     b.HasData(
                         new
@@ -152,6 +189,51 @@ namespace DataAccess.Migrations
                             IsDeleted = false,
                             Name = "TowerCostLevelTwo",
                             Updated = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 12L,
+                            Created = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc),
+                            DefaultValue = (short)3,
+                            IsDeleted = false,
+                            Name = "TowerOutcomeLevelOne",
+                            Updated = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 13L,
+                            Created = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc),
+                            DefaultValue = (short)6,
+                            IsDeleted = false,
+                            Name = "TowerOutcomeLevelTwo",
+                            Updated = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 14L,
+                            Created = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc),
+                            DefaultValue = (short)2,
+                            IsDeleted = false,
+                            Name = "UnitOutcomeLevelOne",
+                            Updated = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 15L,
+                            Created = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc),
+                            DefaultValue = (short)4,
+                            IsDeleted = false,
+                            Name = "UnitOutcomeLevelTwo",
+                            Updated = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 16L,
+                            Created = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc),
+                            DefaultValue = (short)7,
+                            IsDeleted = false,
+                            Name = "UnitOutcomeLevelThree",
+                            Updated = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 
@@ -197,7 +279,7 @@ namespace DataAccess.Migrations
                         .HasDatabaseName("ModificatorEntityName")
                         .HasFilter("\"IsDeleted\" = false");
 
-                    b.ToTable("ModificatorEntities", (string)null);
+                    b.ToTable("ModificatorEntities");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.RealmEntity", b =>
@@ -245,7 +327,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RealmEntities", (string)null);
+                    b.ToTable("RealmEntities");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.UserEntity", b =>
@@ -291,7 +373,30 @@ namespace DataAccess.Migrations
                         .HasDatabaseName("UserEntityUsername")
                         .HasFilter("\"IsDeleted\" = false");
 
-                    b.ToTable("UserEntities", (string)null);
+                    b.ToTable("UserEntities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Created = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc),
+                            IsDeleted = false,
+                            Password = "$2a$11$lMSwQjxeSha8HjlCG0APZ.46R12BlZbFyzQMZjD6gPjhPJtMdzRmS",
+                            Updated = new DateTime(2022, 11, 24, 21, 0, 0, 0, DateTimeKind.Utc),
+                            UserRole = "Admin",
+                            Username = "Harwex"
+                        });
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.GamePartyEntity", b =>
+                {
+                    b.HasOne("DataAccess.Entities.UserEntity", "WinnerUser")
+                        .WithMany("GameParties")
+                        .HasForeignKey("WinnerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WinnerUser");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.ModificatorEntity", b =>
@@ -336,6 +441,8 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.UserEntity", b =>
                 {
+                    b.Navigation("GameParties");
+
                     b.Navigation("Realms");
                 });
 #pragma warning restore 612, 618

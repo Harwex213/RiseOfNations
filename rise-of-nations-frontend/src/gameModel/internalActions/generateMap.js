@@ -1,6 +1,6 @@
 import { gameConstants } from "../../common/constants";
 import * as seedrandom from "seedrandom";
-import { Tile, Country } from "../models";
+import { Tile, Country, directionVectors } from "../models";
 
 const { playersAmountToLandPercent, mapSizes, landOffset, minDistanceBetweenPlayers } =
     gameConstants.generationMapConfig;
@@ -13,14 +13,7 @@ const marks = {
     player3: 2,
     player4: 3,
 };
-const up = [0, -1];
-const down = [0, 1];
-const left = [-1, 0];
-const right = [1, 0];
-const leftUp = [left[0], up[1]];
-const rightUp = [right[0], up[1]];
-const leftDown = [left[0], down[1]];
-const rightDown = [right[0], down[1]];
+const { up, down, left, right, leftUp, rightUp, leftDown, rightDown } = directionVectors;
 
 const getRandomGenerationFunc = (seed) => {
     const getNextRandom = seedrandom(seed);
@@ -37,7 +30,7 @@ const getInitParams = (playersAmount, mapSize) => {
     });
     const centerPoint = [mapSizes.width / 2 - 1, mapSizes.height / 2 - 1];
 
-    return [targetMapMass, matrix, centerPoint];
+    return { targetMapMass, matrix, centerPoint };
 };
 
 const markCoast = (matrix, coasts, point) => {
@@ -77,7 +70,7 @@ const generateCountries = (getRandom, matrix, coasts, playersAmount) => {
     const setPlayerLand = (point, movement, mark) => {
         matrix[point[0] + movement[0]][point[1] + movement[1]] = mark;
     };
-    for (let playerMark = -1; playerMark >= -playersAmount; playerMark--) {
+    for (let playerMark = marks.player1; playerMark < playersAmount; playerMark++) {
         const playerIndex = getRandom(possibleSettlementArea.length);
         const playerLand = possibleSettlementArea[playerIndex];
         matrix[playerLand[0]][playerLand[1]] = playerMark;
@@ -113,20 +106,23 @@ const matrixMapToModels = (matrix, playersAmount) => {
     const countries = [...new Array(playersAmount)].map(() => new Country());
 
     for (let row = 0; row < matrix.length; row++) {
+        const tilesRow = [];
         for (let col = 0; col < matrix[row].length; col++) {
             const mark = matrix[row][col];
 
             if (mark === marks.empty) {
-                tiles.push(null);
+                tilesRow.push(null);
             } else if (mark === marks.land) {
-                tiles.push(new Tile(row, col));
+                tilesRow.push(new Tile(row, col));
             } else {
                 const countryIndex = mark;
                 const tile = new Tile(row, col);
-                tile.setCountry(countries[countryIndex]);
+                tile.setCountryIndex(countryIndex);
                 countries[countryIndex].addTile(tile);
+                tilesRow.push(tile);
             }
         }
+        tiles.push(tilesRow);
     }
 
     return [tiles, countries];
@@ -140,7 +136,7 @@ export const generateMap = ({ seed, playersAmount, mapSize }) => {
     const coasts = generateLandWithCoast(getRandom, matrix, targetMapMass, centerPoint);
     markCoastAsLand(matrix, coasts);
     generateCountries(getRandom, matrix, coasts, playersAmount);
-    const result = matrixMapToModels(matrix);
+    const result = matrixMapToModels(matrix, playersAmount);
 
     const endTime = performance.now();
     console.log(`Map generation complete for ${endTime - startTime} ms.`);
