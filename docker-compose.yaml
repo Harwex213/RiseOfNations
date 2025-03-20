@@ -9,14 +9,14 @@ services:
 
   game-client:
     container_name: rise-of-nations-game-client
-    build: packages/rise-of-nations-frontend
+    build: packages/client-frontend
     ports:
       - 3001:80
     depends_on:
       - backend
   
   backend:
-    container_name: rise-of-nations-backend
+    container_name: backend
     build: deprecated-backend
     ports:
       - "5000:5000"
