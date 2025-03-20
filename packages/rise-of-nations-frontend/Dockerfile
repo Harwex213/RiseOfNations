@@ -9,7 +9,7 @@ COPY package-lock.json .
 
 RUN npm install
 
-COPY . .
+COPY ../packages/rise-of-nations-frontend .
 
 RUN npm run build
 

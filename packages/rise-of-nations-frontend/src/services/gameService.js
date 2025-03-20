@@ -1,15 +1,15 @@
-import { apiClient, initSse, suspenseApiError } from "../../apiClient";
-import { gamesTransform } from "../../transform/gamesTransform";
+import { apiClient, initSse, suspenseApiError } from "../apiClient";
+import { gamesTransform } from "../transform/gamesTransform";
 import {
     canvasConstants,
     gameConstants,
     notificationEvents,
     notificationsApiRoutes,
-} from "../../common/constants";
-import { stores } from "../../store";
-import { apiErrors, gameServiceMessages } from "../../common/localization";
-import { chatMessagesTransform } from "../../transform/chatMessagesTransform";
-import { gameModel } from "../../gameModel";
+} from "../common/constants";
+import { stores } from "../store";
+import { apiErrors, gameServiceMessages } from "../common/localization";
+import { chatMessagesTransform } from "../transform/chatMessagesTransform";
+import { gameModel } from "../gameModel";
 
 const events = notificationEvents.game;
 const currentGame = stores.currentGame;

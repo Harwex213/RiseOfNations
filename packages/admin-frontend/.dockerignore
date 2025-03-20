@@ -4,4 +4,4 @@ node_modules
 .vs
 
 .eslintrc.json
-.prettierrc.json
+../../.prettierrc.json

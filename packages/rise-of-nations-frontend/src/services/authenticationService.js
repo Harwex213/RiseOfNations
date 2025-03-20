@@ -1,7 +1,7 @@
-import { apiClient, suspenseApiError } from "../../apiClient";
-import { authenticationTransform } from "../../transform/authenticationTransform";
-import { stores } from "../../store";
-import { gameService } from "../game/gameService";
+import { apiClient, suspenseApiError } from "../apiClient";
+import { authenticationTransform } from "../transform/authenticationTransform";
+import { stores } from "../store";
+import { gameService } from "./gameService";
 
 const userStore = stores.user;
 

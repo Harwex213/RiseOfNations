@@ -1,0 +1,13 @@
+{
+  "name": "rise-of-nations",
+  "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "eslint": "8.57.1",
+    "eslint-config-prettier": "8.10.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "prettier": "2.8.8"
+  }
+}

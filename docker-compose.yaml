@@ -1,7 +1,7 @@
 services:
   admin-client:
     container_name: rise-of-nations-admin-client
-    build: ./admin-frontend
+    build: packages/admin-frontend
     ports:
       - 3000:80
     depends_on:
@@ -9,7 +9,7 @@ services:
 
   game-client:
     container_name: rise-of-nations-game-client
-    build: ./rise-of-nations-frontend
+    build: packages/rise-of-nations-frontend
     ports:
       - 3001:80
     depends_on:
@@ -17,7 +17,7 @@ services:
   
   backend:
     container_name: rise-of-nations-backend
-    build: ./RiseOfNationsBackend
+    build: RiseOfNationsBackend
     ports:
       - "5000:5000"
     restart: always

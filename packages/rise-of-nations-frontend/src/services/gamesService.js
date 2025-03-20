@@ -1,8 +1,8 @@
-import { stores } from "../../store";
-import { notificationsApiRoutes, notificationEvents } from "../../common/constants";
-import { gamesTransform } from "../../transform/gamesTransform";
-import { initSse } from "../../apiClient";
-import { apiErrors } from "../../common/localization";
+import { stores } from "../store";
+import { notificationsApiRoutes, notificationEvents } from "../common/constants";
+import { gamesTransform } from "../transform/gamesTransform";
+import { initSse } from "../apiClient";
+import { apiErrors } from "../common/localization";
 
 const events = notificationEvents.gameList;
 const gamesStore = stores.games;

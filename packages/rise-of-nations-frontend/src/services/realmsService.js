@@ -1,6 +1,6 @@
-import { apiClient, suspenseApiError } from "../../apiClient";
-import { realmsTransform } from "../../transform/realmsTransform";
-import { stores } from "../../store";
+import { apiClient, suspenseApiError } from "../apiClient";
+import { realmsTransform } from "../transform/realmsTransform";
+import { stores } from "../store";
 
 const userStore = stores.user;
 

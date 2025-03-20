@@ -1,6 +1,6 @@
-import { stores } from "../../store";
-import { apiClient, suspenseApiError } from "../../apiClient";
-import { gameInfoTransform } from "../../transform/gameInfoTransform";
+import { stores } from "../store";
+import { apiClient, suspenseApiError } from "../apiClient";
+import { gameInfoTransform } from "../transform/gameInfoTransform";
 
 const gameInfoStore = stores.globalGameInfo;
 
