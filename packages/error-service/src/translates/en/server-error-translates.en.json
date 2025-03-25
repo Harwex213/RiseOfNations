@@ -1,0 +1,6 @@
+{
+  "INTERNAL_SERVER_ERROR":  "Couldn't process your request",
+  "NOT_FOUND": "Not Found",
+  "BAD_REQUEST":  "Bad Request",
+  "NOT_AUTHORIZED":  "Not Authorized"
+}

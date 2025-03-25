@@ -1,0 +1,5 @@
+{
+  "USER_ALREADY_AUTHENTICATED": "User already authenticated",
+  "INVALID_REGISTRATION_DATA": "Check your registration data",
+  "BAD_CREDENTIALS": "Bad credentials. Check your sign in data"
+}

@@ -1,0 +1,14 @@
+{
+  "CANNOT_CREATE_GAME":  "Cannot create game",
+  "GAME_NOT_FOUND": "Game not found",
+  "GAME_IS_FULL":  "Game is full",
+  "GAME_IS_NOT_PREPARING": "Game is not opened for new players",
+  "PLAYER_NOT_FOUND":  "Player not found",
+  "PLAYER_ALREADY_JOINED": "You already joined this game",
+  "CANNOT_KICK":  "You not allowed to kick this player",
+  "SHOULD_SELECT_REALM": "You should select realm before",
+  "NOT_ENOUGH_PLAYERS":  "Not enough players for start game",
+  "PLAYERS_NOT_READY": "Not every player ready for start game",
+  "CANNOT_START":  "You not allowed to start this game",
+  "GAME_IS_NOT_STARTED": "Game is not started"
+}
